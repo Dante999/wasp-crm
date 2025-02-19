@@ -1,0 +1,19 @@
+@startuml
+title Class Diagram
+
+abstract class Base_Object
+
+Base_Object <|-left- Invoice
+Base_Object <|-left- Article
+Base_Object <|-left- Customer
+
+interface IManager
+IManager <|.. Invoice_Manager_Json
+IManager <|.. Article_Manager_Json
+IManager <|.. Customer_Manager_Json
+
+Invoice_Manager_Json --> Invoice
+Article_Manager_Json --> Article
+Customer_Manager_Json --> Customer
+
+@enduml

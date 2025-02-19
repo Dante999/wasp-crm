@@ -1,0 +1,25 @@
+@startuml
+title Business Context of Simple-CRM
+
+left to right direction
+
+actor User as user
+actor Customer as customer
+(Simple CRM)
+[Filesystem]
+
+user --> (Simple CRM) : create article
+user --> (Simple CRM) : create customer
+user --> (Simple CRM) : create invoice
+user <-- (Simple CRM) : report open tasks
+
+
+
+(Simple CRM) --> [Filesystem]: store data
+(Simple CRM) <-- [Filesystem]: load data
+
+
+(Simple CRM) --> customer : export invoice
+
+@enduml
+
