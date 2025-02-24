@@ -1,0 +1,20 @@
+@startuml
+
+title Entity Model
+
+object Invoice
+object Customer
+object Article
+
+object Invoice_Editor
+object Customer_Editor
+object Article_Editor
+
+Customer "1" -- "*" Invoice
+Invoice "1" -- "*" Article 
+
+Invoice_Editor "1" - "*" Invoice
+Customer_Editor "1" - "*" Customer 
+Article_Editor "1" -  "*"Article
+
+@enduml

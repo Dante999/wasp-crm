@@ -1,0 +1,53 @@
+@startmindmap
+title Data organization of Wasp-CRM
+
+* Wasp-CRM
+** appdata
+*** config
+****_ wasp-crm.conf
+****_ lang_de.conf
+*** templates
+**** invoices
+*****_ index.html
+*****_ style.css
+*****_ logo.png
+**** text_snippeds
+*****_ invoice~__subject.txt
+*****_ invoice~__text_before_bill_of_materials.txt
+*****_ invoice~__text_after_bill_of_materials.txt
+
+*** data
+**** articles
+*****_ A-00001.json
+*****_ A-00002.json
+*****_ A-00003.json
+*****_ A-00004.json
+*****_ ...
+**** customers
+*****_ K-00001.json
+*****_ K-00002.json
+*****_ K-00003.json
+*****_ K-00004.json
+*****_ ...
+**** invoices
+*****_ RE-00001.json
+*****_ RE-00002.json
+*****_ RE-00003.json
+*****_ RE-00004.json
+*****_ ...
+
+** <Configurable-Folder>
+*** K-00001~__Bruce_Willis__46218_Mytown
+**** Rechnungen
+*****_ RE-00001~__2024-12-24__Bruce_Willis.pdf
+*****_ RE-00002~__2025-01-04__Bruce_Willis.pdf
+*** K-00002~__Dexter_Morgan__41218_Anytown
+*** K-00003~__Mad_Max__13218_Bullettown
+*** K-00004~__John_Rambo__97218_Wartown
+
+** <Configurable-Folder>
+*** A-00001~__180x200x3mm_Wood
+*** A-00002~__20x20x3mm_Wood
+*** A-00003~_250x100x3mm_Wood
+
+@endmindmap

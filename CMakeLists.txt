@@ -16,5 +16,7 @@ include(cmake/standard-project-settings.cmake)
 
 
 add_subdirectory(code/utils)
+add_subdirectory(code/wcrm-gtk3)
+add_subdirectory(code/wcrm-lib)
 
 #option(BULD_WITH_TESTS "Enable to build with tests", ON)
