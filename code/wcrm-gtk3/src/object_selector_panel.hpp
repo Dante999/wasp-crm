@@ -33,7 +33,7 @@ class ObjectSelectorPanel : public Gtk::Paned {
             m_cached_objects = m_manager->get_list();
 
             SPDLOG_DEBUG("having {} elements cached", m_cached_objects.size());
-            
+
             // TODO: this throws an std::vector range check error
             // this is somehow related to the ui_element_list.signal_cursor_changed() callback
             m_suppress_element_changed_callback = true;
@@ -43,14 +43,14 @@ class ObjectSelectorPanel : public Gtk::Paned {
             SPDLOG_DEBUG("clearing ui_element_list()");
             ui_element_list.clear_items();
             SPDLOG_DEBUG("DONE!");
-            
-            
+
+
             for (const auto &element : m_cached_objects) {
                 std::string display_name = element.get_id_as_string() + " " + element.name;
 
                 ui_element_list.append(display_name);
             }
-            
+
             m_suppress_element_changed_callback = false;
 
         }

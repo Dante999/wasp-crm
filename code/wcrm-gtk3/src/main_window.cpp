@@ -1,8 +1,5 @@
 #include "main_window.hpp"
 
-#include <iostream>
-
-#include <spdlog/spdlog.h>
 
 MainWindow::MainWindow(AppConfig &app_config) : m_app_config{app_config}, ui_article_panel{app_config}
 {

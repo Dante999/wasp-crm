@@ -6,12 +6,9 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/grid.h>
 
-#include <functional>
 
 #include "wcrm-lib/objects/article.hpp"
 
-#include "gtkmm/button.h"
-#include "gtkmm/buttonbox.h"
 #include "object_editor_panel.hpp"
 #include "util_gtk.hpp"
 

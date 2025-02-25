@@ -5,7 +5,6 @@
 #include <gtkmm/paned.h>
 #include <gtkmm/window.h>
 
-#include <memory>
 
 #include "app_config.hpp"
 #include "article_main_pane.hpp"
