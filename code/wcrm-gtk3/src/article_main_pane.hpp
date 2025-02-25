@@ -29,6 +29,7 @@ class ArticleMainPanel : public Gtk::Paned {
             ui_article_editor.set_callback_save_object([&](const Article &article) {
                 const auto saved_article = m_app_config.article_manager->save_element(article);
                 ui_article_editor.load_object(saved_article);
+                ui_article_list.refresh_object_list();
             });
 
             activate();
