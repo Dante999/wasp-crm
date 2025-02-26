@@ -7,7 +7,7 @@
 #include <filesystem>
 #include <memory>
 
-struct AppConfig {
+struct AppContext {
         std::filesystem::path              basepath;
         std::filesystem::path              translation_filepath;
         std::shared_ptr<IManager<Article>> article_manager;

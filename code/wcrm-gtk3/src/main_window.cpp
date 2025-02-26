@@ -1,10 +1,10 @@
 #include "main_window.hpp"
 
 
-MainWindow::MainWindow(AppConfig &app_config) : m_app_config{app_config}, ui_article_panel{app_config}
+MainWindow::MainWindow(AppContext &app_context) : m_app_context{app_context}, ui_article_panel{app_context}
 {
     // Set title and border of the window
-    set_title("Simple CRM");
+    set_title("WaspCRM");
     set_default_size(1600, 1200);
     set_border_width(0);
 

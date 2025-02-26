@@ -3,18 +3,18 @@
 
 #include <gtkmm/paned.h>
 
-#include "app_config.hpp"
+#include "app_context.hpp"
 #include "article_editor.hpp"
 #include "object_selector_panel.hpp"
 
 class ArticleMainPanel : public Gtk::Paned {
     private:
-        AppConfig                   &m_app_config;
+        AppContext                   &m_app_context;
         ArticleEditor                ui_article_editor;
         ObjectSelectorPanel<Article> ui_article_list;
 
     public:
-        ArticleMainPanel(AppConfig &app_config) : m_app_config{app_config}, ui_article_list{app_config.article_manager}
+        ArticleMainPanel(AppContext &app_context) : m_app_context{app_context}, ui_article_list{app_context.article_manager}
         {
             set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
 
@@ -27,7 +27,7 @@ class ArticleMainPanel : public Gtk::Paned {
                 [&](Article article) { ui_article_editor.load_object(article); });
 
             ui_article_editor.set_callback_save_object([&](const Article &article) {
-                const auto saved_article = m_app_config.article_manager->save_element(article);
+                const auto saved_article = m_app_context.article_manager->save_element(article);
                 ui_article_editor.load_object(saved_article);
                 ui_article_list.refresh_object_list();
             });

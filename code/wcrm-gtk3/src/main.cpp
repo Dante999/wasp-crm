@@ -20,7 +20,7 @@
 #include <gtkmm/main.h>
 #include <spdlog/spdlog.h>
 
-#include "app_config.hpp"
+#include "app_context.hpp"
 #include "main_window.hpp"
 #include "util_translate.hpp"
 
@@ -38,14 +38,14 @@ int main(int argc, char *argv[])
 
     Gtk::Main kit(argc, argv);
 
-    AppConfig app_config;
-    app_config.basepath             = argv[1];
-    app_config.translation_filepath = app_config.basepath / "config/language_de.conf"; // TODO: read via configfile
-    app_config.article_manager      = std::make_shared<ArticleManagerJson>(app_config.basepath / "data/articles");
+    AppContext app_context;
+    app_context.basepath             = argv[1];
+    app_context.translation_filepath = app_context.basepath / "config/language_de.conf"; // TODO: read via configfile
+    app_context.article_manager      = std::make_shared<ArticleManagerJson>(app_context.basepath / "data/articles");
 
-    util_translate::init(app_config.translation_filepath);
+    util_translate::init(app_context.translation_filepath);
 
-    MainWindow main_window{app_config};
+    MainWindow main_window{app_context};
     // Shows the window and returns when it is closed.
     Gtk::Main::run(main_window);
 
