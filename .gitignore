@@ -3,3 +3,4 @@ build*
 *.swp
 /.cache
 /appdata/data
+/compile_commands.json

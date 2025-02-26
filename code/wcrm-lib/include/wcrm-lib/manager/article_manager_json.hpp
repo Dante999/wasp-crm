@@ -5,7 +5,10 @@
 
 #include "wcrm-lib/objects/article.hpp"
 
+#include <spdlog/spdlog.h>
+
 #include <filesystem>
+
 
 class ArticleManagerJson : public IManager<Article> {
     private:
@@ -18,7 +21,12 @@ class ArticleManagerJson : public IManager<Article> {
         void do_refresh_list() override;
 
     public:
-        ArticleManagerJson(const std::filesystem::path articles_basedir) : m_articles_basedir{articles_basedir} {}
+        ArticleManagerJson(const std::filesystem::path articles_basedir) : m_articles_basedir{articles_basedir} {
+            if (!std::filesystem::exists(m_articles_basedir)) {
+                std::filesystem::create_directories(m_articles_basedir);
+                SPDLOG_INFO("articles basedir created since it didn't exist: {}", m_articles_basedir.string());
+            }
+        }
         ~ArticleManagerJson() {}
 
         Article save_element(Article element) override;
