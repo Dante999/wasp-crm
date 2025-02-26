@@ -47,6 +47,13 @@ class ObjectSelectorPanel : public Gtk::Paned {
             const auto element = m_manager->create_element();
             m_manager->save_element(element);
             refresh_object_list();
+
+            auto model = ui_element_list.get_model();
+            const auto rows = model->children();
+
+            if (rows.size() > 0) {
+                ui_element_list.set_cursor(model->get_path(--rows.end()));
+            }
         }
 
         void on_button_refresh_clicked()
