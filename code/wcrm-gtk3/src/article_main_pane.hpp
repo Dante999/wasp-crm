@@ -14,7 +14,9 @@ class ArticleMainPanel : public Gtk::Paned {
         ObjectSelectorPanel<Article> ui_article_list;
 
     public:
-        ArticleMainPanel(AppContext &app_context) : m_app_context{app_context}, ui_article_list{app_context.article_manager}
+        ArticleMainPanel(AppContext &app_context)
+            : m_app_context{app_context}
+            , ui_article_list{app_context.article_manager, app_context}
         {
             set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
 

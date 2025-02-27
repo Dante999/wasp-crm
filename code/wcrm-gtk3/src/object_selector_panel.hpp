@@ -4,9 +4,11 @@
 #include <functional>
 
 #include <gtkmm/button.h>
+#include <gtkmm/box.h>
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/listviewtext.h>
 #include <gtkmm/paned.h>
+#include <gtkmm/searchentry.h>
 #include <spdlog/spdlog.h>
 
 #include "wcrm-lib/manager/manager_interface.hpp"
@@ -15,9 +17,10 @@ template <class T>
 class ObjectSelectorPanel : public Gtk::Paned {
     private:
         Gtk::ListViewText            ui_element_list{1};
-        Gtk::ButtonBox               ui_button_box;
-        Gtk::Button                  ui_button_create{"create"};
-        Gtk::Button                  ui_button_refresh{"refresh"};
+        Gtk::Box                     ui_button_box;
+        Gtk::Button                  ui_button_create;
+        Gtk::Button                  ui_button_refresh;
+        Gtk::SearchEntry             ui_search_entry;
         std::shared_ptr<IManager<T>> m_manager;
         std::vector<T>               m_cached_objects;
         std::function<void(T)>       m_callback_on_object_selected;
@@ -64,15 +67,21 @@ class ObjectSelectorPanel : public Gtk::Paned {
         }
 
     public:
-        ObjectSelectorPanel(std::shared_ptr<IManager<T>> manager) : m_manager{manager}
+        ObjectSelectorPanel(std::shared_ptr<IManager<T>> manager, AppContext &context) : m_manager{manager}
         {
             refresh_object_list();
 
+            ui_button_create.set_image(*context.icons.icon_new);
+            ui_button_refresh.set_image(*context.icons.icon_refresh);
+
             ui_button_box.set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
+            ui_button_box.pack_start(ui_search_entry);
             ui_button_box.pack_start(ui_button_create);
             ui_button_box.pack_start(ui_button_refresh);
-
+            set_border_width(10);
             set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
+
+            ui_element_list.set_column_title(0, "");
             pack1(ui_button_box);
             pack2(ui_element_list);
 
@@ -86,7 +95,10 @@ class ObjectSelectorPanel : public Gtk::Paned {
                 sigc::mem_fun(*this, &ObjectSelectorPanel::on_button_refresh_clicked));
         }
 
-        void set_callback_on_object_selected(std::function<void(T)> cb) { m_callback_on_object_selected = cb; }
+        void set_callback_on_object_selected(std::function<void(T)> cb)
+        { 
+            m_callback_on_object_selected = cb;
+        }
 
         void refresh_object_list()
         {
