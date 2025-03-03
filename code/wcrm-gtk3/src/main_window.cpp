@@ -8,9 +8,9 @@ MainWindow::MainWindow(AppContext &app_context) : m_app_context{app_context}, ui
 //    set_default_size(1600, 1200);
     set_border_width(20);
 
-    ui_notebook.append_page(ui_article_panel, util_translate::translate("article"));
-    ui_notebook.append_page(ui_customer_panel, util_translate::translate("customer"));
-    ui_notebook.append_page(ui_invoice_panel, util_translate::translate("invoice"));
+    ui_notebook.append_page(ui_article_panel, util_translate::translate("articles"));
+    ui_notebook.append_page(ui_customer_panel, util_translate::translate("customers"));
+    ui_notebook.append_page(ui_invoice_panel, util_translate::translate("invoices"));
     
     add(ui_notebook);
 

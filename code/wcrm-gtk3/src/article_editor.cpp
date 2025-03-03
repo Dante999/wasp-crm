@@ -24,13 +24,13 @@ void ArticleEditor::read_from_gui(Article &article)
 
 ArticleEditor::ArticleEditor()
 {
-    add(ui_frame_system_info);
+    ui_flowbox.add(ui_frame_system_info);
     ui_frame_system_info.add_element(ui_article_id);
     ui_frame_system_info.add_element(ui_created_at);
     ui_frame_system_info.add_element(ui_last_modified);
     ui_frame_system_info.show();
 
-    add(ui_frame_base_info);
+    ui_flowbox.add(ui_frame_base_info);
     ui_frame_base_info.add_element(ui_article_name);
     ui_frame_base_info.add_element(ui_article_description);
     ui_frame_base_info.add_element(ui_article_length);
@@ -39,7 +39,7 @@ ArticleEditor::ArticleEditor()
     ui_frame_base_info.add_element(ui_article_weight);
     ui_frame_base_info.show();
 
-    add(ui_frame_vendor);
+    ui_flowbox.add(ui_frame_vendor);
     ui_frame_vendor.add_element(ui_vendor_name);
     ui_frame_vendor.add_element(ui_vendor_article_id);
     ui_frame_vendor.add_element(ui_vendor_article_name);

@@ -5,14 +5,14 @@
 #include <gtkmm/button.h>
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/flowbox.h>
-
+#include <gtkmm/box.h>
 // std
 #include <functional>
 
 // locals
 
 template <class T>
-class ObjectEditorPanel : public Gtk::FlowBox {
+class ObjectEditorPanel : public Gtk::Box {
 
     private:
         T                             m_object{0};
@@ -32,6 +32,7 @@ class ObjectEditorPanel : public Gtk::FlowBox {
         }
 
     protected:
+        Gtk::FlowBox   ui_flowbox;
         virtual void write_to_gui(const T &object) = 0;
         virtual void read_from_gui(T &object)      = 0;
 
@@ -39,11 +40,16 @@ class ObjectEditorPanel : public Gtk::FlowBox {
         ObjectEditorPanel()
         {
             set_margin_start(20);
+            set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
 
             ui_button_box.set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
             ui_button_box.add(ui_save_button);
 
-            add(ui_button_box);
+            ui_flowbox.set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
+            ui_flowbox.set_can_focus(false);
+            
+            this->pack_start(ui_button_box, false, false);
+            this->pack_start(ui_flowbox, true, true);
 
             ui_save_button.signal_clicked().connect(
                 sigc::mem_fun(*this, &ObjectEditorPanel::on_button_save_object_clicked));

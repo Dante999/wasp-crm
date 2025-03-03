@@ -11,13 +11,14 @@
 #include <gtkmm/searchentry.h>
 #include <spdlog/spdlog.h>
 
+#include "app_context.hpp"
 #include "wcrm-lib/manager/manager_interface.hpp"
 
 template <class T>
 class ObjectSelectorPanel : public Gtk::Paned {
     private:
         Gtk::ListViewText            ui_element_list{1};
-        Gtk::Box                     ui_button_box;
+        Gtk::Box                     ui_top_hbox;
         Gtk::Button                  ui_button_create;
         Gtk::Button                  ui_button_refresh;
         Gtk::SearchEntry             ui_search_entry;
@@ -74,16 +75,17 @@ class ObjectSelectorPanel : public Gtk::Paned {
             ui_button_create.set_image(*context.icons.icon_new);
             ui_button_refresh.set_image(*context.icons.icon_refresh);
 
-            ui_button_box.set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
-            ui_button_box.pack_start(ui_search_entry);
-            ui_button_box.pack_start(ui_button_create);
-            ui_button_box.pack_start(ui_button_refresh);
-            set_border_width(10);
-            set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
+            ui_top_hbox.set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
+            ui_top_hbox.pack_start(ui_search_entry, true, true);
+            ui_top_hbox.pack_start(ui_button_create, false, false);
+            ui_top_hbox.pack_start(ui_button_refresh, false, false);
 
             ui_element_list.set_column_title(0, "");
-            pack1(ui_button_box);
-            pack2(ui_element_list);
+
+            this->set_border_width(10);
+            this->set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
+            this->pack1(ui_top_hbox, false, false);
+            this->pack2(ui_element_list, true, false);
 
             ui_element_list.signal_cursor_changed().connect(
                 sigc::mem_fun(*this, &ObjectSelectorPanel::on_selected_element_changed));
@@ -96,7 +98,7 @@ class ObjectSelectorPanel : public Gtk::Paned {
         }
 
         void set_callback_on_object_selected(std::function<void(T)> cb)
-        { 
+        {
             m_callback_on_object_selected = cb;
         }
 

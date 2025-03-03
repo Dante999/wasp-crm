@@ -5,6 +5,7 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/label.h>
 
+#include "gtkmm/enums.h"
 #include "util_translate.hpp"
 
 namespace util_gtk {
@@ -17,7 +18,7 @@ struct TextInput {
         {
             label.set_text(util_translate::translate(label_text));
             input.set_text(input_text);
-            input.set_width_chars(width);
+           // input.set_width_chars(width);
         }
 };
 
@@ -29,7 +30,7 @@ struct TextMultilineInput {
         {
             label.set_text(util_translate::translate(label_text));
             input.set_text(input_text);
-            input.set_width_chars(width);
+//            input.set_width_chars(width);
         }
 };
 
@@ -42,6 +43,7 @@ struct TextInputReadonly {
             label.set_text(util_translate::translate(label_text));
             input.set_text(input_text);
             input.set_width_chars(width);
+
 
             input.set_editable(false);
             input.set_can_focus(false);
