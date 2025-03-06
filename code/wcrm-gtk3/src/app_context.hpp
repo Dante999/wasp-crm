@@ -11,19 +11,21 @@
 struct Icons {
     Gtk::Widget *icon_new;
     Gtk::Widget *icon_refresh;
+    Gtk::Widget *icon_placeholder;
 
     Icons(std::filesystem::path basepath) :
-        icon_new     {Gtk::make_managed<Gtk::Image>(basepath / "resources" / "icon-new_16x16.svg")},
-        icon_refresh {Gtk::make_managed<Gtk::Image>(basepath / "resources" / "icon-refresh_16x16.svg")}
+        icon_new         {Gtk::make_managed<Gtk::Image>(basepath / "resources" / "icon-new_16x16.svg")},
+        icon_refresh     {Gtk::make_managed<Gtk::Image>(basepath / "resources" / "icon-refresh_16x16.svg")},
+        icon_placeholder {Gtk::make_managed<Gtk::Image>(basepath / "resources" / "image-placeholder.svg")}
     {}
 };
 
 struct AppContext {
-        const std::filesystem::path              basepath;
+        const std::filesystem::path        basepath;
         ConfigFile                         configfile;
-        const std::filesystem::path              translation_filepath;
+        const std::filesystem::path        translation_filepath;
         std::shared_ptr<IManager<Article>> article_manager;
-        const Icons                              icons;
+        const Icons                        icons;
 
         AppContext(std::filesystem::path _basepath) :
             basepath  { _basepath},

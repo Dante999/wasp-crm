@@ -26,6 +26,10 @@ class ObjectSelectorPanel : public Gtk::Paned {
         std::vector<T>               m_cached_objects;
         std::function<void(T)>       m_callback_on_object_selected;
 
+
+    protected:
+        virtual std::string get_display_name(const T& element) = 0;
+
     private:
 
         void on_selected_element_changed()
@@ -116,6 +120,7 @@ class ObjectSelectorPanel : public Gtk::Paned {
 
 
             for (const auto &element : m_cached_objects) {
+                // TODO: replace with child-overriden call of get_display_name(element);
                 std::string display_name = element.get_id_as_string() + " " + element.name;
 
                 ui_element_list.append(display_name);

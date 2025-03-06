@@ -5,17 +5,18 @@
 
 #include "app_context.hpp"
 #include "article_editor.hpp"
-#include "object_selector_panel.hpp"
+#include "article_selector.hpp"
 
 class ArticleMainPanel : public Gtk::Paned {
     private:
         AppContext                   &m_app_context;
         ArticleEditor                ui_article_editor;
-        ObjectSelectorPanel<Article> ui_article_list;
+        ArticleSelector              ui_article_list;
 
     public:
         ArticleMainPanel(AppContext &app_context)
             : m_app_context{app_context}
+            , ui_article_editor{app_context}
             , ui_article_list{app_context.article_manager, app_context}
         {
             set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);

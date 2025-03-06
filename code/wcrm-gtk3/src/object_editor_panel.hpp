@@ -10,6 +10,8 @@
 #include <functional>
 
 // locals
+#include "app_context.hpp"
+
 
 template <class T>
 class ObjectEditorPanel : public Gtk::Box {
@@ -32,18 +34,22 @@ class ObjectEditorPanel : public Gtk::Box {
         }
 
     protected:
+        AppContext&     m_app_context;
         Gtk::FlowBox   ui_flowbox;
         virtual void write_to_gui(const T &object) = 0;
         virtual void read_from_gui(T &object)      = 0;
 
     public:
-        ObjectEditorPanel()
+        ObjectEditorPanel(AppContext &context) : m_app_context{context}
         {
             set_margin_start(20);
             set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
 
             ui_button_box.set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
-            ui_button_box.add(ui_save_button);
+            ui_button_box.set_margin_top(10);
+            ui_button_box.set_margin_bottom(10);
+
+            ui_button_box.pack_start(ui_save_button);
 
             ui_flowbox.set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
             ui_flowbox.set_can_focus(false);

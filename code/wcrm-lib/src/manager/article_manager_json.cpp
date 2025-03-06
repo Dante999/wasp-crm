@@ -20,6 +20,18 @@ std::string ArticleManagerJson::generate_folder_name(const Article &article)
     return utils::str_replace(name, " ", "_");
 }
 
+
+template<typename T>
+T get_or_default(json &data, const std::string& name, T default_value)
+{
+    if (data.contains(name)) {
+        return data[name].get<T>();
+    }
+    else {
+        return default_value;
+    }
+}
+
 Article ArticleManagerJson::read_json_file(const std::filesystem::path &filepath)
 {
     std::ifstream f(filepath);
@@ -31,8 +43,13 @@ Article ArticleManagerJson::read_json_file(const std::filesystem::path &filepath
     article.created_at = data["created_at"];
     article.modfied_at = data["last_modified_at"];
 
-    article.name        = data["name"];
-    article.description = data["description"];
+    article.name        = get_or_default<std::string>(data, "name", "");
+    article.description = get_or_default<std::string>(data, "description", "");
+    article.unit        = get_or_default<std::string>(data, "unit", "");
+    article.weight_kg   = get_or_default<float>(data, "weight_kg", -1);
+    article.width_cm    = get_or_default<float>(data, "width_cm" , -1);
+    article.length_cm   = get_or_default<float>(data, "length_cm", -1);
+    article.height_cm   = get_or_default<float>(data, "height_cm", -1);
 
     return article;
 }
@@ -103,11 +120,16 @@ Article ArticleManagerJson::save_element(Article article)
 
     // clang-format off
     json data = {
-        {"id"              , article.get_id()},                 
-        {"created_at"      , article.created_at},       
-        {"last_modified_at", article.modfied_at}, 
-        {"name"            , article.name},               
-        {"description"     , article.description}, 
+        {"id"              , article.get_id()},
+        {"created_at"      , article.created_at},
+        {"last_modified_at", article.modfied_at},
+        {"name"            , article.name},
+        {"description"     , article.description},
+        {"unit"            , article.unit},
+        {"width_cm"        , article.width_cm},
+        {"length_cm"       , article.length_cm},
+        {"height_cm"       , article.height_cm},
+        {"weight_kg"       , article.weight_kg}
     };
     // clang-format on
 

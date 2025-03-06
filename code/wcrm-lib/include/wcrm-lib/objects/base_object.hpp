@@ -12,8 +12,6 @@ class BaseObject {
         std::string created_at;
         std::string modfied_at;
 
-        std::string name;
-        std::string description;
 
     public:
         BaseObject(uint64_t id) : m_id{id} {};
