@@ -1,5 +1,7 @@
 #include "article_editor.hpp"
 
+#include "utils/string_utils.hpp"
+
 #include <spdlog/spdlog.h>
 
 void ArticleEditor::write_to_gui(const Article &article)
@@ -13,10 +15,11 @@ void ArticleEditor::write_to_gui(const Article &article)
     ui_article_name.input.set_text(article.name);
     ui_article_description.input.set_text(article.description);
     ui_article_unit.input.set_text(article.unit);
-    ui_article_weight.input.set_text(std::to_string(article.weight_kg));
-    ui_article_length.input.set_text(std::to_string(article.length_cm));
-    ui_article_width.input.set_text(std::to_string(article.width_cm));
-    ui_article_height.input.set_text(std::to_string(article.height_cm));
+    ui_article_material.input.set_text(article.material);
+    ui_article_weight.input.set_text(utils::float_to_string(article.weight_kg, 3));
+    ui_article_length.input.set_text(utils::float_to_string(article.length_cm, 1));
+    ui_article_width.input.set_text(utils::float_to_string(article.width_cm, 1));
+    ui_article_height.input.set_text(utils::float_to_string(article.height_cm, 1));
 }
 
 void ArticleEditor::read_from_gui(Article &article)
@@ -26,6 +29,7 @@ void ArticleEditor::read_from_gui(Article &article)
     article.name        = ui_article_name.input.get_text();
     article.description = ui_article_description.input.get_text();
     article.unit        = ui_article_unit.input.get_text();
+    article.material    = ui_article_material.input.get_text();
     article.weight_kg   = std::stof(ui_article_weight.input.get_text());
     article.length_cm   = std::stof(ui_article_length.input.get_text());
     article.width_cm    = std::stof(ui_article_width.input.get_text());
@@ -58,8 +62,9 @@ ArticleEditor::ArticleEditor(AppContext &context) : ObjectEditorPanel(context)
     ui_frame_base_info.add_full_width(row++, ui_article_name);
     ui_frame_base_info.add_full_width(row++, ui_article_description);
     ui_frame_base_info.add_left(row, ui_article_unit);
+    ui_frame_base_info.add_right(row++, ui_article_material);
+    ui_frame_base_info.add_left(row, ui_article_length);
     ui_frame_base_info.add_right(row++, ui_article_weight);
-    ui_frame_base_info.add_left(row++, ui_article_length);
     ui_frame_base_info.add_left(row++, ui_article_width);
     ui_frame_base_info.add_left(row++, ui_article_height);
 

@@ -25,11 +25,12 @@ class ArticleEditor : public ObjectEditorPanel<Article> {
         util_gtk::FrameFormGrid2      ui_frame_base_info{"article"};
         util_gtk::TextInput           ui_article_name{"name", "", };
         util_gtk::TextInput           ui_article_unit{"unit", "", };
+        util_gtk::TextInput           ui_article_material{"material", "", };
         util_gtk::TextMultilineInput  ui_article_description{"description", "", };
         util_gtk::TextInput           ui_article_width{"width_cm", ""};
         util_gtk::TextInput           ui_article_length{"length_cm", ""};
         util_gtk::TextInput           ui_article_height{"height_cm", ""};
-        util_gtk::TextInput           ui_article_weight{"weight_gram", ""};
+        util_gtk::TextInput           ui_article_weight{"weight_kg", ""};
 
         util_gtk::FrameFormGrid2      ui_frame_vendor{"purchasing"};
         util_gtk::TextInput           ui_vendor_name{"vendor", ""};

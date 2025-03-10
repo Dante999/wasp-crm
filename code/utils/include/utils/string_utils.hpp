@@ -26,6 +26,7 @@ std::string &str_replace(std::string &text, const std::string &old_word, const s
 [[nodiscard]] bool str_starts_with(const std::string &s, const std::string &start);
 [[nodiscard]] bool str_ends_with(const std::string &s, const std::string &end);
 
+[[nodiscard]] std::string float_to_string(float value, int precision);
 } // namespace utils
 
 #endif // STRING_UTILS_HPP

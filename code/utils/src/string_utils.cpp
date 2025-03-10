@@ -138,4 +138,13 @@ std::string &str_replace(std::string &text, const std::string &old_word, const s
     return text;
 }
 
+[[nodiscard]] std::string float_to_string(float value, int precision)
+{
+    char buffer[255];
+
+    snprintf(buffer, sizeof(buffer), "%0.*f", precision, value);
+
+    return buffer;
+}
+
 } // namespace utils

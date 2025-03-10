@@ -28,7 +28,7 @@ class ObjectSelectorPanel : public Gtk::Paned {
 
 
     protected:
-        virtual std::string get_display_name(const T& element) = 0;
+        virtual std::string get_element_display_name(const T& element) = 0;
 
     private:
 
@@ -74,7 +74,7 @@ class ObjectSelectorPanel : public Gtk::Paned {
     public:
         ObjectSelectorPanel(std::shared_ptr<IManager<T>> manager, AppContext &context) : m_manager{manager}
         {
-            refresh_object_list();
+//            refresh_object_list();
 
             ui_button_create.set_image(*context.icons.icon_new);
             ui_button_refresh.set_image(*context.icons.icon_refresh);
@@ -108,6 +108,14 @@ class ObjectSelectorPanel : public Gtk::Paned {
 
         void refresh_object_list()
         {
+            std::string last_selected_id;
+
+            if (m_cached_objects.size() > 0) {
+                const auto selected_column = ui_element_list.get_selected().at(0);
+                last_selected_id           = m_cached_objects.at(selected_column).get_id_as_string();
+            }
+
+
 
             SPDLOG_DEBUG("refreshing object list");
             m_manager->refresh_list();
@@ -121,9 +129,19 @@ class ObjectSelectorPanel : public Gtk::Paned {
 
             for (const auto &element : m_cached_objects) {
                 // TODO: replace with child-overriden call of get_display_name(element);
-                std::string display_name = element.get_id_as_string() + " " + element.name;
-
+                // std::string display_name = element.get_id_as_string() + " " + element.name;
+                std::string display_name = get_element_display_name(element);
                 ui_element_list.append(display_name);
+
+                if (element.get_id_as_string() == last_selected_id) {
+                    auto model = ui_element_list.get_model();
+                    const auto rows = model->children();
+
+                    if (rows.size() > 0) {
+                        ui_element_list.set_cursor(model->get_path(--rows.end()));
+                    }
+
+                }
             }
 
         }

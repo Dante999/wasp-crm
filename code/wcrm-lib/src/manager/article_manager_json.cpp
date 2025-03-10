@@ -46,6 +46,7 @@ Article ArticleManagerJson::read_json_file(const std::filesystem::path &filepath
     article.name        = get_or_default<std::string>(data, "name", "");
     article.description = get_or_default<std::string>(data, "description", "");
     article.unit        = get_or_default<std::string>(data, "unit", "");
+    article.material    = get_or_default<std::string>(data, "material", "");
     article.weight_kg   = get_or_default<float>(data, "weight_kg", -1);
     article.width_cm    = get_or_default<float>(data, "width_cm" , -1);
     article.length_cm   = get_or_default<float>(data, "length_cm", -1);
@@ -126,6 +127,7 @@ Article ArticleManagerJson::save_element(Article article)
         {"name"            , article.name},
         {"description"     , article.description},
         {"unit"            , article.unit},
+        {"material"        , article.material},
         {"width_cm"        , article.width_cm},
         {"length_cm"       , article.length_cm},
         {"height_cm"       , article.height_cm},

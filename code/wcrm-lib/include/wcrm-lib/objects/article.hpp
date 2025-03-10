@@ -13,6 +13,7 @@ struct Article : public BaseObject {
         std::string name;
         std::string description;
         std::string unit;
+        std::string material;
         float width_cm;
         float height_cm;
         float length_cm;
