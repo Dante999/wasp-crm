@@ -6,10 +6,20 @@
 #include <gtkmm/label.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/enums.h>
+#include <gtkmm/button.h>
 
 #include "util_translate.hpp"
 
+#include <filesystem>
+
 namespace util_gtk {
+
+inline void set_button_icon(Gtk::Button &button, const std::filesystem::path icon_path)
+{
+    Gtk::Widget *icon = Gtk::make_managed<Gtk::Image>(icon_path);
+    button.set_vexpand(false);
+    button.set_image(*icon);
+}
 
 struct Placeholder {
     Gtk::Label label;

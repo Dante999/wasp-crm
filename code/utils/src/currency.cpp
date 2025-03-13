@@ -13,7 +13,11 @@ void Currency::from_cents(uint64_t cents) { m_raw_value = cents * precision; }
 
 void Currency::from_string(std::string s)
 {
-
+    if (s.empty()) {
+        from_cents(0);
+        return;
+    }
+    
     s = utils::str_replace(s, "€", "");
     s = utils::str_replace(s, ".", "");
 

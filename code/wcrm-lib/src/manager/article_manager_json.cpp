@@ -52,6 +52,15 @@ Article ArticleManagerJson::read_json_file(const std::filesystem::path &filepath
     article.length_cm   = get_or_default<float>(data, "length_cm", -1);
     article.height_cm   = get_or_default<float>(data, "height_cm", -1);
 
+    article.vendor_name                = get_or_default<std::string>(data, "vendor_name", "");
+    article.vendor_article_id          = get_or_default<std::string>(data, "vendor_article_id", "");
+    article.vendor_article_name        = get_or_default<std::string>(data, "vendor_article_name", "");
+    article.vendor_article_description = get_or_default<std::string>(data, "vendor_article_description", "");
+    article.vendor_article_weblink     = get_or_default<std::string>(data, "vendor_article_weblink", "");
+    article.vendor_article_price.from_string(get_or_default<std::string>(    data, "vendor_article_price", ""));
+
+    article.sell_price.from_string(get_or_default<std::string>(data, "sell_price", ""));
+
     return article;
 }
 
@@ -131,7 +140,14 @@ Article ArticleManagerJson::do_save_element(Article article)
         {"width_cm"        , article.width_cm},
         {"length_cm"       , article.length_cm},
         {"height_cm"       , article.height_cm},
-        {"weight_kg"       , article.weight_kg}
+        {"weight_kg"       , article.weight_kg},
+        {"vendor_name"     , article.vendor_name},
+        {"vendor_article_id"         , article.vendor_article_id},
+        {"vendor_article_name"       , article.vendor_article_name},
+        {"vendor_article_description", article.vendor_article_description},
+        {"vendor_article_weblink"    , article.vendor_article_weblink},
+        {"vendor_article_price"      , article.vendor_article_price.as_string()},
+        {"sell_price"                , article.sell_price.as_string()}
     };
     // clang-format on
 

@@ -25,8 +25,10 @@ void ArticleEditor::write_to_gui(const Article &article)
     ui_vendor_article_id.input.set_text(article.vendor_article_id);
     ui_vendor_article_name.input.set_text(article.vendor_article_name);
     ui_vendor_article_description.input.set_text(article.vendor_article_description);
-    ui_vendor_article_price.input.set_text(article.vendor_price.as_string());
+    ui_vendor_article_price.input.set_text(article.vendor_article_price.as_string());
     ui_vendor_article_weblink.input.set_text(article.vendor_article_weblink);
+
+    ui_sell_price.input.set_text(article.sell_price.as_string());
 }
 
 void ArticleEditor::read_from_gui(Article &article)
@@ -47,7 +49,9 @@ void ArticleEditor::read_from_gui(Article &article)
     article.vendor_article_name        = ui_vendor_article_name.input.get_text();
     article.vendor_article_description = ui_vendor_article_description.input.get_text();
     article.vendor_article_weblink     = ui_vendor_article_weblink.input.get_text();
-    article.vendor_price.from_string(ui_vendor_article_price.input.get_text());
+    article.vendor_article_price.from_string(ui_vendor_article_price.input.get_text());
+
+    article.sell_price.from_string(ui_sell_price.input.get_text());
 }
 
 ArticleEditor::ArticleEditor(AppContext &context) : ObjectEditorPanel(context)

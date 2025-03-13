@@ -18,13 +18,15 @@ struct Article : public BaseObject {
         float height_cm;
         float length_cm;
         float weight_kg;
-        
+
         std::string vendor_name;
         std::string vendor_article_id;
         std::string vendor_article_name;
         std::string vendor_article_description;
         std::string vendor_article_weblink;
-        Currency    vendor_price;
+        Currency    vendor_article_price;
+
+        Currency sell_price;
 };
 
 #endif // ARTICLE_HPP

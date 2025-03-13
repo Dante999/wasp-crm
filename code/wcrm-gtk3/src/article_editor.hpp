@@ -40,6 +40,8 @@ class ArticleEditor : public ObjectEditorPanel<Article> {
         util_gtk::TextInput           ui_vendor_article_weblink{"weblink", ""};
         util_gtk::TextInput           ui_vendor_article_price{"unit_price_euro", ""};
 
+        util_gtk::TextInput           ui_sell_price{"unit_price_euro", ""};
+
     private:
         void write_to_gui(const Article &article) override;
         void read_from_gui(Article &article) override;

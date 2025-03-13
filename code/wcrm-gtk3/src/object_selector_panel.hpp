@@ -19,135 +19,112 @@ class ObjectSelectorPanel : public Gtk::Paned {
     private:
         Gtk::ListBox                 ui_element_list;
         Gtk::Box                     ui_top_hbox;
-        Gtk::Button                  ui_button_create;
-        Gtk::Button                  ui_button_refresh;
         Gtk::SearchEntry             ui_search_entry;
-        std::vector<std::pair<Gtk::Label,T>>               m_cached_objects;
-        std::function<void(T)>       m_callback_on_object_selected;
-        std::function<void()>        m_callback_on_create_object;
 
-        bool m_ignore_callbacks{false};
+        std::vector<std::pair<Gtk::Label,T>>  m_cached_objects;
+        std::function<void(T)>                m_callback_on_object_selected;
+
 
     protected:
         virtual std::string get_element_display_name(const T& element) = 0;
 
     private:
-
-        void on_row_selected(Gtk::ListBoxRow* row)
-        {
-            SPDLOG_INFO("on_row_selected()");
-
-            if (row == nullptr) return;
-
-            if (m_callback_on_object_selected && !m_ignore_callbacks) {
-                m_callback_on_object_selected(m_cached_objects.at(row->get_index()).second);
-            }
-        }
-
-        void on_button_create_element_clicked()
-        {
-            SPDLOG_DEBUG("on_button_create_element_clicked()");
-            if (m_callback_on_create_object) {
-                m_callback_on_create_object();
-            }
-        }
-
-        void on_button_refresh_clicked()
-        {
-            SPDLOG_DEBUG("on_button_refresh_clicked()");
-        }
+        void on_row_selected(Gtk::ListBoxRow* row);
 
     public:
-        ObjectSelectorPanel(AppContext &context) 
-        {
-//            refresh_object_list();
+        ObjectSelectorPanel(AppContext &context);
 
-            ui_button_create.set_image(*context.icons.icon_new);
-            ui_button_refresh.set_image(*context.icons.icon_refresh);
+        void set_callback_on_object_selected(std::function<void(T)> cb) { m_callback_on_object_selected = cb;}
+        void select_object(const T& object);
+        void refresh_object_list(const std::vector<T>& objects);
+};
 
-            ui_top_hbox.set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
-            ui_top_hbox.pack_start(ui_search_entry, true, true);
-            ui_top_hbox.pack_start(ui_button_create, false, false);
-            ui_top_hbox.pack_start(ui_button_refresh, false, false);
+template <class T>
+ObjectSelectorPanel<T>::ObjectSelectorPanel([[maybe_unused]] AppContext &context)
+{
 
-//            ui_element_list.set_column_title(0, "");
+    ui_top_hbox.set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
+    ui_top_hbox.pack_start(ui_search_entry, true, true);
 
-            this->set_border_width(10);
-            this->set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
-            this->pack1(ui_top_hbox, false, false);
-            this->pack2(ui_element_list, true, false);
 
-            ui_element_list.signal_row_selected().connect(
-                sigc::mem_fun(*this, &ObjectSelectorPanel::on_row_selected));
+    this->set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
+    this->pack1(ui_top_hbox, false, false);
+    this->pack2(ui_element_list, true, false);
 
-            ui_button_create.signal_clicked().connect(
-                sigc::mem_fun(*this, &ObjectSelectorPanel::on_button_create_element_clicked));
+    ui_element_list.signal_row_selected().connect(
+        sigc::mem_fun(*this, &ObjectSelectorPanel::on_row_selected));
 
-            ui_button_refresh.signal_clicked().connect(
-                sigc::mem_fun(*this, &ObjectSelectorPanel::on_button_refresh_clicked));
-        }
+}
 
-        void set_callback_on_object_selected(std::function<void(T)> cb)
-        {
-            m_callback_on_object_selected = cb;
-        }
+template <class T>
+void ObjectSelectorPanel<T>::on_row_selected(Gtk::ListBoxRow* row)
+{
+    SPDLOG_INFO("on_row_selected()");
 
-        void set_callback_on_create_object(std::function<void()> cb)
-        {
-            m_callback_on_create_object = cb;
-        }
+    if (row == nullptr) return;
 
-        void select_object(const T& object)
-        {
-            std::ignore = object;
+    if (m_callback_on_object_selected) {
+        m_callback_on_object_selected(m_cached_objects.at(row->get_index()).second);
+    }
+}
+
+template <class T>
+void ObjectSelectorPanel<T>::refresh_object_list(const std::vector<T>& objects)
+{
+    SPDLOG_INFO("refreshing object list with {} entries", objects.size());
+
+
+    for (auto child : ui_element_list.get_children()) {
+        ui_element_list.remove(*child);
+    }
+   
+
+    m_cached_objects.clear();
+    m_cached_objects.reserve(objects.size());
+
+    for (const auto& object: objects) {
+        m_cached_objects.emplace_back(
+                std::make_pair(
+                    Gtk::Label(get_element_display_name(object), Gtk::Align::ALIGN_START, Gtk::Align::ALIGN_START), 
+                    object
+                )
+        );
+
+        ui_element_list.append(m_cached_objects.back().first);
+
+    }
+
+        ui_element_list.show_all_children();
+}
+
+
+template <class T>
+void ObjectSelectorPanel<T>::select_object(const T& object)
+{
+    std::ignore = object;
 // TODO
 #if 0
-            const auto target_name = get_element_display_name(object);
+    const auto target_name = get_element_display_name(object);
 
-            for (size_t i=0; i < m_cached_objects.size(); ++i) {
-                if (m_cached_objects.at(i).get_id() == object.get_id()) {
-                    ui_element_list.set_cursor(ui_element_list.get_model()->children()->get_value(i)->get
-                }
+    for (size_t i=0; i < m_cached_objects.size(); ++i) {
+        if (m_cached_objects.at(i).get_id() == object.get_id()) {
+            ui_element_list.set_cursor(ui_element_list.get_model()->children()->get_value(i)->get
+        }
 
-            }
+    }
 #if 0
-                if (element.get_id_as_string() == last_selected_id) {
-                    auto model = ui_element_list.get_model();
-                    const auto rows = model->children();
+        if (element.get_id_as_string() == last_selected_id) {
+            auto model = ui_element_list.get_model();
+            const auto rows = model->children();
 
-                    if (rows.size() > 0) {
-                        ui_element_list.set_cursor(model->get_path(--rows.end()));
-                    }
+            if (rows.size() > 0) {
+                ui_element_list.set_cursor(model->get_path(--rows.end()));
+            }
 
-                }
+        }
 #endif
 #endif
-        }
+}
 
-        void refresh_object_list(const std::vector<T>& objects)
-        {
-            SPDLOG_INFO("refreshing object list with {} entries", objects.size());
-
-
-            for (auto child : ui_element_list.get_children()) {
-                ui_element_list.remove(*child);
-            }
-//            ui_element_list.clear_items();
-            m_cached_objects.clear();
-            //m_cached_objects.reserve(objects.size());
-            for (const auto& object: objects) {
-                m_cached_objects.emplace_back(
-                        std::make_pair(Gtk::Label(get_element_display_name(object), Gtk::Align::ALIGN_START, Gtk::Align::ALIGN_START), object) 
-                );
-
-
-//                const std::string display_name = get_element_display_name(object);
-                ui_element_list.append(m_cached_objects.back().first);
- //               ui_element_list.append(display_name);
-
-            }
-        }
-
-};
 
 #endif /* OBJECT_SELECTOR_PANEL_HPP */
