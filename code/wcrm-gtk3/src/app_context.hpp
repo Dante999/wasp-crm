@@ -32,7 +32,9 @@ struct AppContext {
             configfile           { _basepath / "config" / "wasp-crm.conf"},
             translation_filepath { _basepath / "config" / configfile.get_string("languagefile")},
             icons                { _basepath }
-        {}
+        {
+            //article_manager->refresh_list();
+        }
 
 };
 

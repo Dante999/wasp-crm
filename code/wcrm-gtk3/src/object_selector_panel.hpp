@@ -6,73 +6,59 @@
 #include <gtkmm/button.h>
 #include <gtkmm/box.h>
 #include <gtkmm/buttonbox.h>
-#include <gtkmm/listviewtext.h>
+//#include <gtkmm/listviewtext.h>
+#include <gtkmm/listbox.h>
 #include <gtkmm/paned.h>
 #include <gtkmm/searchentry.h>
 #include <spdlog/spdlog.h>
 
 #include "app_context.hpp"
-#include "wcrm-lib/manager/manager_interface.hpp"
 
 template <class T>
 class ObjectSelectorPanel : public Gtk::Paned {
     private:
-        Gtk::ListViewText            ui_element_list{1};
+        Gtk::ListBox                 ui_element_list;
         Gtk::Box                     ui_top_hbox;
         Gtk::Button                  ui_button_create;
         Gtk::Button                  ui_button_refresh;
         Gtk::SearchEntry             ui_search_entry;
-        std::shared_ptr<IManager<T>> m_manager;
-        std::vector<T>               m_cached_objects;
+        std::vector<std::pair<Gtk::Label,T>>               m_cached_objects;
         std::function<void(T)>       m_callback_on_object_selected;
+        std::function<void()>        m_callback_on_create_object;
 
+        bool m_ignore_callbacks{false};
 
     protected:
         virtual std::string get_element_display_name(const T& element) = 0;
 
     private:
 
-        void on_selected_element_changed()
+        void on_row_selected(Gtk::ListBoxRow* row)
         {
-            if (ui_element_list.size() == 0) {
-                // do nothing on empty list
-                return;
-            }
+            SPDLOG_INFO("on_row_selected()");
 
-            SPDLOG_DEBUG("on_selected_element_changed()");
+            if (row == nullptr) return;
 
-            if (m_callback_on_object_selected) {
-                const auto selected_column = ui_element_list.get_selected().at(0);
-
-                m_callback_on_object_selected(m_cached_objects.at(selected_column));
+            if (m_callback_on_object_selected && !m_ignore_callbacks) {
+                m_callback_on_object_selected(m_cached_objects.at(row->get_index()).second);
             }
         }
 
         void on_button_create_element_clicked()
         {
             SPDLOG_DEBUG("on_button_create_element_clicked()");
-
-            const auto element = m_manager->create_element();
-            m_manager->save_element(element);
-            refresh_object_list();
-
-            auto model = ui_element_list.get_model();
-            const auto rows = model->children();
-
-            if (rows.size() > 0) {
-                ui_element_list.set_cursor(model->get_path(--rows.end()));
+            if (m_callback_on_create_object) {
+                m_callback_on_create_object();
             }
         }
 
         void on_button_refresh_clicked()
         {
             SPDLOG_DEBUG("on_button_refresh_clicked()");
-
-            refresh_object_list();
         }
 
     public:
-        ObjectSelectorPanel(std::shared_ptr<IManager<T>> manager, AppContext &context) : m_manager{manager}
+        ObjectSelectorPanel(AppContext &context) 
         {
 //            refresh_object_list();
 
@@ -84,15 +70,15 @@ class ObjectSelectorPanel : public Gtk::Paned {
             ui_top_hbox.pack_start(ui_button_create, false, false);
             ui_top_hbox.pack_start(ui_button_refresh, false, false);
 
-            ui_element_list.set_column_title(0, "");
+//            ui_element_list.set_column_title(0, "");
 
             this->set_border_width(10);
             this->set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
             this->pack1(ui_top_hbox, false, false);
             this->pack2(ui_element_list, true, false);
 
-            ui_element_list.signal_cursor_changed().connect(
-                sigc::mem_fun(*this, &ObjectSelectorPanel::on_selected_element_changed));
+            ui_element_list.signal_row_selected().connect(
+                sigc::mem_fun(*this, &ObjectSelectorPanel::on_row_selected));
 
             ui_button_create.signal_clicked().connect(
                 sigc::mem_fun(*this, &ObjectSelectorPanel::on_button_create_element_clicked));
@@ -106,33 +92,25 @@ class ObjectSelectorPanel : public Gtk::Paned {
             m_callback_on_object_selected = cb;
         }
 
-        void refresh_object_list()
+        void set_callback_on_create_object(std::function<void()> cb)
         {
-            std::string last_selected_id;
+            m_callback_on_create_object = cb;
+        }
 
-            if (m_cached_objects.size() > 0) {
-                const auto selected_column = ui_element_list.get_selected().at(0);
-                last_selected_id           = m_cached_objects.at(selected_column).get_id_as_string();
+        void select_object(const T& object)
+        {
+            std::ignore = object;
+// TODO
+#if 0
+            const auto target_name = get_element_display_name(object);
+
+            for (size_t i=0; i < m_cached_objects.size(); ++i) {
+                if (m_cached_objects.at(i).get_id() == object.get_id()) {
+                    ui_element_list.set_cursor(ui_element_list.get_model()->children()->get_value(i)->get
+                }
+
             }
-
-
-
-            SPDLOG_DEBUG("refreshing object list");
-            m_manager->refresh_list();
-            m_cached_objects = m_manager->get_list();
-
-            SPDLOG_DEBUG("having {} elements cached", m_cached_objects.size());
-
-
-            ui_element_list.clear_items();
-
-
-            for (const auto &element : m_cached_objects) {
-                // TODO: replace with child-overriden call of get_display_name(element);
-                // std::string display_name = element.get_id_as_string() + " " + element.name;
-                std::string display_name = get_element_display_name(element);
-                ui_element_list.append(display_name);
-
+#if 0
                 if (element.get_id_as_string() == last_selected_id) {
                     auto model = ui_element_list.get_model();
                     const auto rows = model->children();
@@ -142,8 +120,32 @@ class ObjectSelectorPanel : public Gtk::Paned {
                     }
 
                 }
-            }
+#endif
+#endif
+        }
 
+        void refresh_object_list(const std::vector<T>& objects)
+        {
+            SPDLOG_INFO("refreshing object list with {} entries", objects.size());
+
+
+            for (auto child : ui_element_list.get_children()) {
+                ui_element_list.remove(*child);
+            }
+//            ui_element_list.clear_items();
+            m_cached_objects.clear();
+            //m_cached_objects.reserve(objects.size());
+            for (const auto& object: objects) {
+                m_cached_objects.emplace_back(
+                        std::make_pair(Gtk::Label(get_element_display_name(object), Gtk::Align::ALIGN_START, Gtk::Align::ALIGN_START), object) 
+                );
+
+
+//                const std::string display_name = get_element_display_name(object);
+                ui_element_list.append(m_cached_objects.back().first);
+ //               ui_element_list.append(display_name);
+
+            }
         }
 
 };

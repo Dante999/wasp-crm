@@ -19,6 +19,7 @@ class ArticleManagerJson : public IManager<Article> {
         Article read_json_file(const std::filesystem::path &filepath);
 
         void do_refresh_list() override;
+        Article do_save_element(Article element) override;
 
     public:
         ArticleManagerJson(const std::filesystem::path articles_basedir) : m_articles_basedir{articles_basedir} {
@@ -29,7 +30,6 @@ class ArticleManagerJson : public IManager<Article> {
         }
         ~ArticleManagerJson() {}
 
-        Article save_element(Article element) override;
 };
 
 #endif // IARTICLE_MANAGER_HPP

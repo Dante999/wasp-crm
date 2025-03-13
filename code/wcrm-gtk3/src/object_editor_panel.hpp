@@ -13,12 +13,12 @@
 #include "app_context.hpp"
 
 
-template <class T>
+template <class Tobject>
 class ObjectEditorPanel : public Gtk::Box {
 
     private:
-        T                             m_object{0};
-        std::function<void(T object)> m_callback_on_save_object;
+        Tobject                       m_object{0};
+        std::function<void(Tobject object)> m_callback_on_save_object;
 
         Gtk::Button    ui_save_button{"save"};
         Gtk::ButtonBox ui_button_box;
@@ -36,8 +36,8 @@ class ObjectEditorPanel : public Gtk::Box {
     protected:
         AppContext&     m_app_context;
         Gtk::FlowBox   ui_flowbox;
-        virtual void write_to_gui(const T &object) = 0;
-        virtual void read_from_gui(T &object)      = 0;
+        virtual void write_to_gui(const Tobject &object) = 0;
+        virtual void read_from_gui(Tobject &object)      = 0;
 
     public:
         ObjectEditorPanel(AppContext &context) : m_app_context{context}
@@ -53,7 +53,7 @@ class ObjectEditorPanel : public Gtk::Box {
 
             ui_flowbox.set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
             ui_flowbox.set_can_focus(false);
-            
+
             this->pack_start(ui_button_box, false, false);
             this->pack_start(ui_flowbox, true, true);
 
@@ -61,13 +61,14 @@ class ObjectEditorPanel : public Gtk::Box {
                 sigc::mem_fun(*this, &ObjectEditorPanel::on_button_save_object_clicked));
         }
 
-        void load_object(T object)
+        void load_object(Tobject object)
         {
+            SPDLOG_DEBUG("load_object()");
             m_object = object;
             write_to_gui(object);
         }
 
-        void set_callback_save_object(std::function<void(T object)> cb) { m_callback_on_save_object = cb; }
+        void set_callback_save_object(std::function<void(Tobject object)> cb) { m_callback_on_save_object = cb; }
 };
 
 #endif /* OBJECT_EDITOR_PANEL_HPP */

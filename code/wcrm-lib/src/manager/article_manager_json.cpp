@@ -91,7 +91,7 @@ void ArticleManagerJson::do_refresh_list()
     SPDLOG_INFO("finished loading {} Articles", m_elements.size());
 }
 
-Article ArticleManagerJson::save_element(Article article)
+Article ArticleManagerJson::do_save_element(Article article)
 {
 
     SPDLOG_INFO("saving article {}...", article.get_id_as_string());

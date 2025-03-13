@@ -20,6 +20,13 @@ void ArticleEditor::write_to_gui(const Article &article)
     ui_article_length.input.set_text(utils::float_to_string(article.length_cm, 1));
     ui_article_width.input.set_text(utils::float_to_string(article.width_cm, 1));
     ui_article_height.input.set_text(utils::float_to_string(article.height_cm, 1));
+
+    ui_vendor_name.input.set_text(article.vendor_name);
+    ui_vendor_article_id.input.set_text(article.vendor_article_id);
+    ui_vendor_article_name.input.set_text(article.vendor_article_name);
+    ui_vendor_article_description.input.set_text(article.vendor_article_description);
+    ui_vendor_article_price.input.set_text(article.vendor_price.as_string());
+    ui_vendor_article_weblink.input.set_text(article.vendor_article_weblink);
 }
 
 void ArticleEditor::read_from_gui(Article &article)
@@ -34,9 +41,16 @@ void ArticleEditor::read_from_gui(Article &article)
     article.length_cm   = std::stof(ui_article_length.input.get_text());
     article.width_cm    = std::stof(ui_article_width.input.get_text());
     article.height_cm   = std::stof(ui_article_height.input.get_text());
+
+    article.vendor_name                = ui_vendor_name.input.get_text();
+    article.vendor_article_id          = ui_vendor_article_id.input.get_text();
+    article.vendor_article_name        = ui_vendor_article_name.input.get_text();
+    article.vendor_article_description = ui_vendor_article_description.input.get_text();
+    article.vendor_article_weblink     = ui_vendor_article_weblink.input.get_text();
+    article.vendor_price.from_string(ui_vendor_article_price.input.get_text());
 }
 
-ArticleEditor::ArticleEditor(AppContext &context) : ObjectEditorPanel(context) 
+ArticleEditor::ArticleEditor(AppContext &context) : ObjectEditorPanel(context)
 {
     /*
      * Material

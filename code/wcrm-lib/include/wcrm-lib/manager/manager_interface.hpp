@@ -15,7 +15,8 @@ struct IManager {
     protected:
         std::vector<T> m_elements;
 
-        virtual void do_refresh_list() = 0;
+        virtual void do_refresh_list()          = 0;
+        virtual T    do_save_element(T element) = 0;
 
     public:
         virtual ~IManager() {}
@@ -47,7 +48,10 @@ struct IManager {
             }
         }
 
-        virtual T save_element(T element) = 0;
+        T save_element(T element)
+        {
+            return do_save_element(element);
+        }
 };
 
 #endif // IMANAGER_HPP
