@@ -6,8 +6,6 @@
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/flowbox.h>
 #include <gtkmm/box.h>
-// std
-#include <functional>
 
 // locals
 #include "app_context.hpp"
@@ -23,6 +21,7 @@ class ObjectEditorPanel : public Gtk::Box {
     protected:
         AppContext&    m_app_context;
         Gtk::FlowBox   ui_flowbox;
+
         virtual void write_to_gui(const Tobject &object) = 0;
         virtual void read_from_gui(Tobject &object)      = 0;
 

@@ -7,7 +7,7 @@
 #include <gtkmm/notebook.h>
 
 #include "app_context.hpp"
-#include "article_main_pane.hpp"
+#include "article_main_panel.hpp"
 
 class MainWindow : public Gtk::Window {
     private:
