@@ -14,9 +14,9 @@ public:
         return fmt::format("{}__{}__L{}xB{}xH{}cm",
                 element.get_id_as_string(),
                 utils::str_replace(new_name, " ", "_"),
-                utils::float_to_string(element.length_cm, 1),
-                utils::float_to_string(element.width_cm, 1),
-                utils::float_to_string(element.height_cm, 1));
+                element.length_cm.as_string(),
+                element.width_cm.as_string(),
+                element.height_cm.as_string());
     }
 
 public:

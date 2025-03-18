@@ -1,8 +1,7 @@
 #include "article_editor.hpp"
 
-#include "utils/string_utils.hpp"
-
 #include <spdlog/spdlog.h>
+
 
 void ArticleEditor::write_to_gui(const Article &article)
 {
@@ -16,10 +15,10 @@ void ArticleEditor::write_to_gui(const Article &article)
     ui_article_description.input.set_text(article.description);
     ui_article_unit.input.set_text(article.unit);
     ui_article_material.input.set_text(article.material);
-    ui_article_weight.input.set_text(utils::float_to_string(article.weight_kg, 3));
-    ui_article_length.input.set_text(utils::float_to_string(article.length_cm, 1));
-    ui_article_width.input.set_text(utils::float_to_string(article.width_cm, 1));
-    ui_article_height.input.set_text(utils::float_to_string(article.height_cm, 1));
+    ui_article_weight.input.set_text(article.weight_kg.as_string());
+    ui_article_length.input.set_text(article.length_cm.as_string());
+    ui_article_width.input.set_text(article.width_cm.as_string());
+    ui_article_height.input.set_text(article.height_cm.as_string());
 
     ui_vendor_name.input.set_text(article.vendor_name);
     ui_vendor_article_id.input.set_text(article.vendor_article_id);

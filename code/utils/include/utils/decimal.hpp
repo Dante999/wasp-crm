@@ -16,14 +16,14 @@ public:
     Decimal(float f) { from_float(f);}
 
 
-    [[nodiscard]] std::string as_string() {
+    [[nodiscard]] std::string as_string() const {
         char buffer[255];
         snprintf(buffer, sizeof(buffer), "%0.*f", PRECISSION, static_cast<double>(m_raw));
         return std::string(buffer);
    
     }
 
-    [[nodiscard]] float as_float() { return m_raw;}
+    [[nodiscard]] float as_float() const { return m_raw;}
 
     void from_float(float f)
     {

@@ -4,6 +4,7 @@
 #include "base_object.hpp"
 
 #include "utils/currency.hpp"
+#include "utils/decimal.hpp"
 
 struct Article : public BaseObject {
         Article(uint64_t id) : BaseObject{id} {}
@@ -14,10 +15,10 @@ struct Article : public BaseObject {
         std::string description;
         std::string unit;
         std::string material;
-        float width_cm;
-        float height_cm;
-        float length_cm;
-        float weight_kg;
+        Decimal<1> width_cm;
+        Decimal<1> height_cm;
+        Decimal<1> length_cm;
+        Decimal<3> weight_kg;
 
         std::string vendor_name;
         std::string vendor_article_id;
