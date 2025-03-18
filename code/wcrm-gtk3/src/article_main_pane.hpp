@@ -61,9 +61,9 @@ class ArticleMainPanel : public Gtk::Paned {
 
             ui_main_vbox.pack_start(ui_top_hbox, false, false);
             ui_main_vbox.pack_start(ui_bottom_hpaned);
-            ui_main_vbox.set_margin_top(5);
-            ui_main_vbox.set_margin_left(30);
-            ui_main_vbox.set_margin_right(30);
+            ui_main_vbox.set_margin_top(10);
+            ui_main_vbox.set_margin_left(20);
+            ui_main_vbox.set_margin_right(20);
             ui_main_vbox.set_margin_bottom(30);
 
             this->add(ui_main_vbox);

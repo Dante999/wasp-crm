@@ -110,7 +110,7 @@ struct FrameFormGrid2 : FrameFormGrid {
 };
 
 
-template<int NUM_COLUMNS>
+template<size_t NUM_COLUMNS>
 struct FrameFormGridRow : FrameFormGrid{
     std::array<int, NUM_COLUMNS> m_row_counter {0};
 
@@ -120,14 +120,14 @@ struct FrameFormGridRow : FrameFormGrid{
     template <class T>
     void add_element(T &element, int column = 0, int width = 1, int height = 1)
     {
-        m_grid.attach(element.label, 0+(column*2), m_row_counter.at(column));
-        m_grid.attach(element.input, 1+(column*2), m_row_counter.at(column), width, height);
-        m_row_counter.at(column)++;
+        m_grid.attach(element.label, 0+(column*2), m_row_counter.at(static_cast<size_t>(column)));
+        m_grid.attach(element.input, 1+(column*2), m_row_counter.at(static_cast<size_t>(column)), width, height);
+        m_row_counter.at(static_cast<size_t>(column))++;
     }
 
     void add_spacer(int column = 0)
     {
-        m_row_counter.at(column)++;
+        m_row_counter.at(static_cast<size_t>(column))++;
     }
 
 };

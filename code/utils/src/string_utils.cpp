@@ -142,7 +142,7 @@ std::string &str_replace(std::string &text, const std::string &old_word, const s
 {
     char buffer[255];
 
-    snprintf(buffer, sizeof(buffer), "%0.*f", precision, value);
+    snprintf(buffer, sizeof(buffer), "%0.*f", precision, static_cast<double>(value));
 
     return buffer;
 }

@@ -64,7 +64,7 @@ void ObjectSelectorPanel<T>::on_row_selected(Gtk::ListBoxRow* row)
     if (row == nullptr) return;
 
     if (m_callback_on_object_selected) {
-        m_callback_on_object_selected(m_cached_objects.at(row->get_index()).second);
+        m_callback_on_object_selected(m_cached_objects.at(static_cast<size_t>(row->get_index())).second);
     }
 }
 

@@ -3,8 +3,10 @@ gtest_main_dependency = dependency('gtest_main')
 
 
 utils_lib_tests_sources = [
-    'currency_test__initialization.cpp',
-    'currency_test__multiplication.cpp',
+    'test_currency__initialization.cpp',
+    'test_currency__multiplication.cpp',
+    'test_decimal.cpp'
+
 ]
 
 executable('utils_lib_tests',
