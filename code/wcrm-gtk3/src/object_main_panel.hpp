@@ -33,7 +33,6 @@ class ObjectMainPanel : public Gtk::Paned {
             m_manager->refresh_list();
             ui_selector->refresh_object_list(m_manager->get_list());
             ui_selector->select_object(saved_obj);
-            ui_editor->load_object(saved_obj); // TODO: remove when ui_selector->select_object() works
         }
 
     protected:
@@ -42,7 +41,7 @@ class ObjectMainPanel : public Gtk::Paned {
         std::shared_ptr<IManager<Tobject>>            m_manager;
 
     public:
-        ObjectMainPanel(AppContext &app_context, 
+        ObjectMainPanel(AppContext &app_context,
                   std::shared_ptr<ObjectEditorPanel<Tobject>>   _ui_editor,
                   std::shared_ptr<ObjectSelectorPanel<Tobject>> _ui_selector,
                   std::shared_ptr<IManager<Tobject>>            _manager)
@@ -80,7 +79,7 @@ class ObjectMainPanel : public Gtk::Paned {
                     sigc::mem_fun(*this, &ObjectMainPanel::on_save_object));
 
             ui_selector->set_callback_on_object_selected([&](Tobject obj) {
-                // TODO: check for unsaved changes before loading anothero obj 
+                // TODO: check for unsaved changes before loading another obj
                 ui_editor->load_object(obj);
             });
 
@@ -90,7 +89,6 @@ class ObjectMainPanel : public Gtk::Paned {
                 ui_selector->refresh_object_list(obj_list);
                 ui_selector->select_object(obj_list.at(0));
             }
-
 
             activate();
 

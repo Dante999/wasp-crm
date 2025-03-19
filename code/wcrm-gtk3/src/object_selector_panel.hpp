@@ -6,7 +6,6 @@
 #include <gtkmm/button.h>
 #include <gtkmm/box.h>
 #include <gtkmm/buttonbox.h>
-//#include <gtkmm/listviewtext.h>
 #include <gtkmm/listbox.h>
 #include <gtkmm/paned.h>
 #include <gtkmm/searchentry.h>
@@ -56,6 +55,7 @@ ObjectSelectorPanel<T>::ObjectSelectorPanel([[maybe_unused]] AppContext &context
 
 }
 
+
 template <class T>
 void ObjectSelectorPanel<T>::on_row_selected(Gtk::ListBoxRow* row)
 {
@@ -68,6 +68,7 @@ void ObjectSelectorPanel<T>::on_row_selected(Gtk::ListBoxRow* row)
     }
 }
 
+
 template <class T>
 void ObjectSelectorPanel<T>::refresh_object_list(const std::vector<T>& objects)
 {
@@ -77,7 +78,7 @@ void ObjectSelectorPanel<T>::refresh_object_list(const std::vector<T>& objects)
     for (auto child : ui_element_list.get_children()) {
         ui_element_list.remove(*child);
     }
-   
+
 
     m_cached_objects.clear();
     m_cached_objects.reserve(objects.size());
@@ -101,29 +102,20 @@ void ObjectSelectorPanel<T>::refresh_object_list(const std::vector<T>& objects)
 template <class T>
 void ObjectSelectorPanel<T>::select_object(const T& object)
 {
-    std::ignore = object;
-// TODO
-#if 0
-    const auto target_name = get_element_display_name(object);
+    int target_index = -1;
 
     for (size_t i=0; i < m_cached_objects.size(); ++i) {
-        if (m_cached_objects.at(i).get_id() == object.get_id()) {
-            ui_element_list.set_cursor(ui_element_list.get_model()->children()->get_value(i)->get
-        }
 
+        const auto id = m_cached_objects.at(i).second.get_id();
+        if (id == object.get_id()) {
+            target_index = static_cast<int>(i);
+        }
     }
-#if 0
-        if (element.get_id_as_string() == last_selected_id) {
-            auto model = ui_element_list.get_model();
-            const auto rows = model->children();
 
-            if (rows.size() > 0) {
-                ui_element_list.set_cursor(model->get_path(--rows.end()));
-            }
-
-        }
-#endif
-#endif
+    if (target_index > 0) {
+        auto row = ui_element_list.get_row_at_index(target_index);
+        ui_element_list.select_row(*row);
+    }
 }
 
 
