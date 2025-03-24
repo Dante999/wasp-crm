@@ -4,6 +4,7 @@ nlohmann_json_dependency = dependency('nlohmann_json')
 wcrm_lib_includes = include_directories('./include')
 wcrm_lib_sources  = [
     'src/manager/article_manager_json.cpp',
+    'src/objects/object_comparator.cpp'
 ]
 
 wcrm_lib = static_library('wcrm_lib',

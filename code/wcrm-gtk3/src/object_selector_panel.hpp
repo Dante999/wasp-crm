@@ -109,12 +109,17 @@ void ObjectSelectorPanel<T>::select_object(const T& object)
         const auto id = m_cached_objects.at(i).second.get_id();
         if (id == object.get_id()) {
             target_index = static_cast<int>(i);
+            break;
         }
     }
 
-    if (target_index > 0) {
+    if (target_index != -1) {
+        SPDLOG_INFO("selecting row with index {}", target_index);
         auto row = ui_element_list.get_row_at_index(target_index);
         ui_element_list.select_row(*row);
+    }
+    else {
+        SPDLOG_WARN("unable to find row with object id {}", object.get_id());
     }
 }
 

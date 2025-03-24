@@ -6,20 +6,22 @@
 #include <gtkmm/buttonbox.h>
 #include <gtkmm/flowbox.h>
 #include <gtkmm/box.h>
+#include <gtkmm/messagedialog.h>
 
 // locals
 #include "app_context.hpp"
-
+#include "wcrm-lib/objects/object_comparator.hpp"
 
 template <class Tobject>
 class ObjectEditorPanel : public Gtk::Box {
 
     private:
-        Tobject                       m_object{0};
+        Tobject m_object_old{0};
 
 
     protected:
         AppContext&    m_app_context;
+        Tobject        m_object{0};
         Gtk::FlowBox   ui_flowbox;
 
         virtual void write_to_gui(const Tobject &object) = 0;
@@ -36,16 +38,24 @@ class ObjectEditorPanel : public Gtk::Box {
             this->pack_start(ui_flowbox, true, true);
         }
 
+        std::vector<CompareDiff> get_unsaved_changes()
+        {
+            read_from_gui(m_object);
+            return get_object_diff(m_object_old, m_object);
+
+        }
+
         void load_object(Tobject object)
         {
             SPDLOG_DEBUG("load_object()");
-            m_object = object;
+            m_object_old = object;
+            m_object     = object;
             write_to_gui(object);
         }
 
-        Tobject get_object() { 
+        Tobject get_object() {
             read_from_gui(m_object);
-            return m_object; 
+            return m_object;
         }
 
 };

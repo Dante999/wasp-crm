@@ -27,12 +27,47 @@ class ObjectMainPanel : public Gtk::Paned {
             ui_editor->load_object(o);
         }
 
-        void on_save_object() {
+        void on_save_object()
+        {
             auto obj = ui_editor->get_object();
             const auto saved_obj= m_manager->save_element(obj);
             m_manager->refresh_list();
             ui_selector->refresh_object_list(m_manager->get_list());
             ui_selector->select_object(saved_obj);
+        }
+
+        void on_object_selected(Tobject obj)
+        {
+            const auto unsaved_changes = ui_editor->get_unsaved_changes();
+
+            if (!unsaved_changes.empty()) {
+                SPDLOG_WARN("{} unsaved changes!", unsaved_changes.size());
+            }
+
+
+#if 0
+            Gtk::MessageDialog dialog(*this,
+                    "Unsaved Changes!",
+                    false /* use_markup */,
+                    Gtk::MessageType::MESSAGE_WARNING,
+                    Gtk::BUTTONS_OK_CANCEL);
+
+            dialog.set_secondary_text(
+                    "You have unsaved changes!\n"
+                    "\n"
+                    "Click OK to continue and discard changes\n"
+                    "or click CANCEL to stay on the page");
+
+            int result = dialog.run();
+
+            //Handle the response:
+            switch(result) {
+              case(Gtk::RESPONSE_OK): break;
+              case(Gtk::RESPONSE_CANCEL): return;
+          }
+#endif
+            // TODO: check for unsaved changes before loading another obj
+            ui_editor->load_object(std::move(obj));
         }
 
     protected:
@@ -79,18 +114,19 @@ class ObjectMainPanel : public Gtk::Paned {
                     sigc::mem_fun(*this, &ObjectMainPanel::on_save_object));
 
             ui_selector->set_callback_on_object_selected([&](Tobject obj) {
-                // TODO: check for unsaved changes before loading another obj
-                ui_editor->load_object(obj);
+               on_object_selected(obj);     
             });
+
+            activate();
 
             m_manager->refresh_list();
             auto obj_list = m_manager->get_list();
             if (!obj_list.empty()) {
                 ui_selector->refresh_object_list(obj_list);
+
+                SPDLOG_INFO("selecting first entry");
                 ui_selector->select_object(obj_list.at(0));
             }
-
-            activate();
 
         }
 };

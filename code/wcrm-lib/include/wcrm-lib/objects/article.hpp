@@ -30,4 +30,6 @@ struct Article : public BaseObject {
         Currency sell_price;
 };
 
+
+
 #endif // ARTICLE_HPP

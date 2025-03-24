@@ -97,5 +97,6 @@ ArticleEditor::ArticleEditor(AppContext &context) : ObjectEditorPanel(context)
     ui_frame_vendor.add_full_width(row++, ui_vendor_article_name);
     ui_frame_vendor.add_full_width(row++, ui_vendor_article_description);
     ui_frame_vendor.add_full_width(row++, ui_vendor_article_weblink);
-
+    
+    write_to_gui(m_object);
 }
