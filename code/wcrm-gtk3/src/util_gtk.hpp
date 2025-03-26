@@ -10,9 +10,33 @@
 
 #include "util_translate.hpp"
 
+
 #include <filesystem>
+#include <type_traits>
 
 namespace util_gtk {
+
+template <typename Tgui, typename Tvalue>
+void value_to_gui(const Tvalue value, Tgui &ui)
+{
+    if constexpr (std::is_same_v<Tvalue, std::string>) {
+        ui.input.set_text(value);
+    }
+    else {
+        ui.input.set_text(value.as_string());
+    }
+}
+
+template <typename Tgui, typename Tvalue>
+void value_from_gui(Tvalue& value, const Tgui &ui)
+{
+    if constexpr (std::is_same_v<Tvalue, std::string>) {
+        value = ui.input.get_text();
+    }
+    else {
+        value.from_string(ui.input.get_text());
+    }
+}
 
 inline void set_button_icon(Gtk::Button &button, const std::filesystem::path icon_path)
 {
@@ -88,21 +112,21 @@ struct FrameFormGrid2 : FrameFormGrid {
     FrameFormGrid2(const std::string &name) : FrameFormGrid{name} {}
 
     template <class T>
-    void add_left(int row, T &element) 
+    void add_left(int row, T &element)
     {
         m_grid.attach(element.label, 0, row, 1, 1);
         m_grid.attach(element.input, 1, row, 1, 1);
     }
-    
+
     template <class T>
-    void add_right(int row, T &element) 
+    void add_right(int row, T &element)
     {
         m_grid.attach(element.label, 3, row, 1, 1);
         m_grid.attach(element.input, 4, row, 1, 1);
     }
-    
+
     template <class T>
-    void add_full_width(int row, T &element) 
+    void add_full_width(int row, T &element)
     {
         m_grid.attach(element.label, 0, row, 1, 1);
         m_grid.attach(element.input, 1, row, 5, 1);

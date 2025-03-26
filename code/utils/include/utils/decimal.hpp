@@ -20,7 +20,7 @@ public:
         char buffer[255];
         snprintf(buffer, sizeof(buffer), "%0.*f", PRECISSION, static_cast<double>(m_raw));
         return std::string(buffer);
-   
+
     }
 
     [[nodiscard]] float as_float() const { return m_raw;}
@@ -39,7 +39,7 @@ public:
         else {
             from_float(std::stof(s));
         }
-        
+
     }
 };
 

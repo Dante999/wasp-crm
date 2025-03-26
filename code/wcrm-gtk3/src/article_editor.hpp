@@ -40,6 +40,7 @@ class ArticleEditor : public ObjectEditorPanel<Article> {
         util_gtk::TextInput           ui_vendor_article_weblink{"weblink", ""};
         util_gtk::TextInput           ui_vendor_article_price{"unit_price_euro", ""};
 
+        util_gtk::FrameFormGrid2      ui_frame_sales{"sales"};
         util_gtk::TextInput           ui_sell_price{"unit_price_euro", ""};
 
     private:
