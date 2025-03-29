@@ -59,7 +59,7 @@ ObjectSelectorPanel<T>::ObjectSelectorPanel([[maybe_unused]] AppContext &context
 template <class T>
 void ObjectSelectorPanel<T>::on_row_selected(Gtk::ListBoxRow* row)
 {
-    SPDLOG_INFO("on_row_selected()");
+    SPDLOG_INFO("on_row_selected(): row={}", row != nullptr ? row->get_index() : -1);
 
     if (row == nullptr) return;
 
@@ -86,7 +86,7 @@ void ObjectSelectorPanel<T>::refresh_object_list(const std::vector<T>& objects)
     for (const auto& object: objects) {
         m_cached_objects.emplace_back(
                 std::make_pair(
-                    Gtk::Label(get_element_display_name(object), Gtk::Align::ALIGN_START, Gtk::Align::ALIGN_START), 
+                    Gtk::Label(get_element_display_name(object), Gtk::Align::ALIGN_START, Gtk::Align::ALIGN_START),
                     object
                 )
         );
@@ -114,7 +114,7 @@ void ObjectSelectorPanel<T>::select_object(const T& object)
     }
 
     if (target_index != -1) {
-        SPDLOG_INFO("selecting row with index {}", target_index);
+        SPDLOG_INFO("selecting object at row with index {}", target_index);
         auto row = ui_element_list.get_row_at_index(target_index);
         ui_element_list.select_row(*row);
     }

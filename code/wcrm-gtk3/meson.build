@@ -1,5 +1,6 @@
 spdlog_dependency = dependency('spdlog')
 gtkmm3_dependency = dependency('gtkmm-3.0', include_type: 'system')
+gdkmm3_dependency = dependency('gdkmm-3.0', include_type: 'system')
 
 
 wcrm_gtk3_sources  = [
@@ -16,7 +17,7 @@ executable('wcrm_gtk3',
     wcrm_gtk3_sources,
     include_directories: [wcrm_lib_includes, utils_lib_includes],
     link_with:           [wcrm_lib, utils_lib],
-    dependencies:        [spdlog_dependency, gtkmm3_dependency]
+    dependencies:        [spdlog_dependency, gtkmm3_dependency, gdkmm3_dependency]
 )
 
 

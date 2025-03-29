@@ -1,13 +1,23 @@
 #include "wcrm-lib/objects/object_comparator.hpp"
 
+#include <type_traits>
+#define STRINGIFY(x) #x
+#define COMPARE_OBJECT(RESULT_VEC, ATTR_NAME, LHS_OBJ, RHS_OBJ) add_if_different(RESULT_VEC, STRINGIFY(ATTR_NAME), lhs.ATTR_NAME, rhs.ATTR_NAME)
+
 namespace {
 
-    inline void add_if_different(std::vector<CompareDiff> &diff_vec,
+    template<typename Tvalue>
+    void add_if_different(std::vector<CompareDiff> &diff_vec,
                                  const std::string& attr_name,
-                                 const std::string& lhs,
-                                 const std::string& rhs)
+                                 const Tvalue& lhs,
+                                 const Tvalue& rhs)
     {
-        if (lhs != rhs) diff_vec.push_back({attr_name, lhs, rhs});
+       if constexpr (std::is_same_v<Tvalue, std::string>) {
+            if (lhs != rhs) diff_vec.push_back({attr_name, lhs, rhs});
+       }
+       else {
+            if (lhs.as_string() != rhs.as_string()) diff_vec.push_back({attr_name, lhs.as_string(), rhs.as_string()});
+       }
     }
 
 }
@@ -16,26 +26,23 @@ std::vector<CompareDiff> get_object_diff(const Article& lhs, const Article& rhs)
 {
     std::vector<CompareDiff> diff;
 
-    add_if_different(diff, "name",        lhs.name,        rhs.name);
-    add_if_different(diff, "description", lhs.description, rhs.description);
-    add_if_different(diff, "unit",        lhs.unit,        rhs.unit);
-    add_if_different(diff, "material",    lhs.material,    rhs.material);
+    COMPARE_OBJECT(diff, name       , lhs, rhs);
+    COMPARE_OBJECT(diff, description, lhs, rhs);
+    COMPARE_OBJECT(diff, unit       , lhs, rhs);
+    COMPARE_OBJECT(diff, material   , lhs, rhs);
+    COMPARE_OBJECT(diff, width_cm   , lhs, rhs);
+    COMPARE_OBJECT(diff, height_cm  , lhs, rhs);
+    COMPARE_OBJECT(diff, length_cm  , lhs, rhs);
+    COMPARE_OBJECT(diff, weight_kg  , lhs, rhs);
 
-    // TODO
-#if 0
-    Decimal<1> width_cm;
-    Decimal<1> height_cm;
-    Decimal<1> length_cm;
-    Decimal<3> weight_kg;
+    COMPARE_OBJECT(diff, vendor_name                , lhs, rhs);
+    COMPARE_OBJECT(diff, vendor_article_id          , lhs, rhs);
+    COMPARE_OBJECT(diff, vendor_article_name        , lhs, rhs);
+    COMPARE_OBJECT(diff, vendor_article_description , lhs, rhs);
+    COMPARE_OBJECT(diff, vendor_article_weblink     , lhs, rhs);
+    COMPARE_OBJECT(diff, vendor_article_price       , lhs, rhs);
 
-    std::string vendor_name;
-    std::string vendor_article_id;
-    std::string vendor_article_name;
-    std::string vendor_article_description;
-    std::string vendor_article_weblink;
-    Currency    vendor_article_price;
+    COMPARE_OBJECT(diff, sell_price, lhs, rhs);
 
-    Currency sell_price;
-#endif
     return diff;
 }

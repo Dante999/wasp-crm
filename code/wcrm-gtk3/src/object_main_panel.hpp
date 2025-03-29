@@ -4,7 +4,8 @@
 #include <gtkmm/paned.h>
 #include <gtkmm/button.h>
 #include <gtkmm/box.h>
-
+#include <gtkmm/window.h>
+#include <sstream>
 
 #include "app_context.hpp"
 #include "util_gtk.hpp"
@@ -14,6 +15,7 @@
 template <class Tobject>
 class ObjectMainPanel : public Gtk::Paned {
     private:
+        AppContext&      m_app_context;
         Gtk::Paned       ui_bottom_hpaned{Gtk::Orientation::ORIENTATION_HORIZONTAL};
         Gtk::Box         ui_top_hbox{Gtk::Orientation::ORIENTATION_HORIZONTAL};
         Gtk::Box         ui_main_vbox{Gtk::Orientation::ORIENTATION_VERTICAL};
@@ -30,6 +32,8 @@ class ObjectMainPanel : public Gtk::Paned {
         void on_save_object()
         {
             auto obj = ui_editor->get_object();
+            SPDLOG_INFO("saving {}", obj.get_id_as_string());
+
             const auto saved_obj= m_manager->save_element(obj);
             m_manager->refresh_list();
             ui_selector->refresh_object_list(m_manager->get_list());
@@ -38,35 +42,45 @@ class ObjectMainPanel : public Gtk::Paned {
 
         void on_object_selected(Tobject obj)
         {
+            const auto current_obj = ui_editor->get_object();
+
             const auto unsaved_changes = ui_editor->get_unsaved_changes();
 
-            if (!unsaved_changes.empty()) {
-                SPDLOG_WARN("{} unsaved changes!", unsaved_changes.size());
-            }
+            if (!unsaved_changes.empty() && current_obj.get_id() != obj.get_id()) {
 
+                std::stringstream ss;
 
-#if 0
-            Gtk::MessageDialog dialog(*this,
+                ss << fmt::format("{} unsaved changes!\n", unsaved_changes.size());
+                for (const auto &diff : unsaved_changes) {
+                    ss << fmt::format("\t{:<20}: {:<20} -> {}\n", diff.attribute_name, diff.value_lhs, diff.value_rhs);
+                }
+
+                SPDLOG_WARN(ss.str());
+
+                // TODO
+                // - Error when saving via dialog: (wcrm_gtk3:19223): Gtk-CRITICAL **: 14:02:22.429: gtk_list_box_row_grab_focus: assertion 'box != NULL' failed
+                // - Maybe log the object diff as info when saving 
+                Gtk::MessageDialog dialog(*m_app_context.main_window,
                     "Unsaved Changes!",
                     false /* use_markup */,
                     Gtk::MessageType::MESSAGE_WARNING,
-                    Gtk::BUTTONS_OK_CANCEL);
+                    Gtk::BUTTONS_YES_NO);
 
-            dialog.set_secondary_text(
+                dialog.set_secondary_text(
                     "You have unsaved changes!\n"
                     "\n"
-                    "Click OK to continue and discard changes\n"
-                    "or click CANCEL to stay on the page");
+                    "Click YES to save your changes\n"
+                    "or click NO to discard the changes!");
 
-            int result = dialog.run();
-
-            //Handle the response:
-            switch(result) {
-              case(Gtk::RESPONSE_OK): break;
-              case(Gtk::RESPONSE_CANCEL): return;
-          }
-#endif
-            // TODO: check for unsaved changes before loading another obj
+                int result = dialog.run();
+                //Handle the response:
+                switch(result) {
+                  case(Gtk::RESPONSE_YES): 
+                      on_save_object();
+                      break;
+                  case(Gtk::RESPONSE_NO): break;
+                }
+            }
             ui_editor->load_object(std::move(obj));
         }
 
@@ -80,7 +94,8 @@ class ObjectMainPanel : public Gtk::Paned {
                   std::shared_ptr<ObjectEditorPanel<Tobject>>   _ui_editor,
                   std::shared_ptr<ObjectSelectorPanel<Tobject>> _ui_selector,
                   std::shared_ptr<IManager<Tobject>>            _manager)
-            : ui_editor{_ui_editor}
+            : m_app_context{app_context}
+            , ui_editor{_ui_editor}
             , ui_selector{_ui_selector}
             , m_manager{_manager}
         {
@@ -114,7 +129,7 @@ class ObjectMainPanel : public Gtk::Paned {
                     sigc::mem_fun(*this, &ObjectMainPanel::on_save_object));
 
             ui_selector->set_callback_on_object_selected([&](Tobject obj) {
-               on_object_selected(obj);     
+               on_object_selected(obj);
             });
 
             activate();
