@@ -39,12 +39,6 @@ int main(int argc, char *argv[])
     Gtk::Main kit(argc, argv);
 
     AppContext app_context(argv[1]);
-/*    app_context.basepath             = argv[1];
-
-    app_context.icons                = Icons(app_context.basepath);
-    app_context.configfile.load(app_context.basepath / "config" / "wasp-crm.conf");
-    app_context.translation_filepath = app_context.basepath / "config" / app_context.configfile.get_string("languagefile");
-*/
     app_context.article_manager      = std::make_shared<ArticleManagerJson>(app_context.basepath / "data" / "articles");
 
     util_translate::init(app_context.translation_filepath);

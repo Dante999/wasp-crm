@@ -23,27 +23,34 @@ class ObjectMainPanel : public Gtk::Paned {
         Gtk::Button      ui_button_save;
 
 
-        void on_create_object()
+        void on_create_button_clicked()
         {
             auto o = m_manager->create_element();
             ui_editor->load_object(o);
         }
 
-        void on_save_object()
+        void on_save_button_clicked() {
+            save_object_in_editor();
+        }
+
+        void save_object_in_editor(bool refresh_list_after_save = true)
         {
             auto obj = ui_editor->get_object();
             SPDLOG_INFO("saving {}", obj.get_id_as_string());
 
             const auto saved_obj= m_manager->save_element(obj);
-            m_manager->refresh_list();
-            ui_selector->refresh_object_list(m_manager->get_list());
-            ui_selector->select_object(saved_obj);
+
+            if (refresh_list_after_save) {
+                m_manager->refresh_list();
+                ui_selector->refresh_object_list(m_manager->get_list());
+            }
         }
 
-        void on_object_selected(Tobject obj)
+        bool on_object_selected(Tobject obj)
         {
-            const auto current_obj = ui_editor->get_object();
+            bool should_refresh = false;
 
+            const auto current_obj     = ui_editor->get_object();
             const auto unsaved_changes = ui_editor->get_unsaved_changes();
 
             if (!unsaved_changes.empty() && current_obj.get_id() != obj.get_id()) {
@@ -52,36 +59,40 @@ class ObjectMainPanel : public Gtk::Paned {
 
                 ss << fmt::format("{} unsaved changes!\n", unsaved_changes.size());
                 for (const auto &diff : unsaved_changes) {
-                    ss << fmt::format("\t{:<20}: {:<20} -> {}\n", diff.attribute_name, diff.value_lhs, diff.value_rhs);
+                    ss << fmt::format("\t{:<20}: {:<20} -> {}\n",
+                            diff.attribute_name,
+                            diff.value_lhs,
+                            diff.value_rhs);
                 }
 
                 SPDLOG_WARN(ss.str());
 
                 // TODO
                 // - Error when saving via dialog: (wcrm_gtk3:19223): Gtk-CRITICAL **: 14:02:22.429: gtk_list_box_row_grab_focus: assertion 'box != NULL' failed
-                // - Maybe log the object diff as info when saving 
+                // - Maybe log the object diff as info when saving
                 Gtk::MessageDialog dialog(*m_app_context.main_window,
-                    "Unsaved Changes!",
+                    "Discard changes?",
                     false /* use_markup */,
                     Gtk::MessageType::MESSAGE_WARNING,
                     Gtk::BUTTONS_YES_NO);
 
                 dialog.set_secondary_text(
-                    "You have unsaved changes!\n"
-                    "\n"
-                    "Click YES to save your changes\n"
-                    "or click NO to discard the changes!");
+                    "Click YES to discard unsaved changes\n"
+                    "or click NO to save them");
 
                 int result = dialog.run();
                 //Handle the response:
                 switch(result) {
-                  case(Gtk::RESPONSE_YES): 
-                      on_save_object();
-                      break;
-                  case(Gtk::RESPONSE_NO): break;
+                    case(Gtk::RESPONSE_YES):
+                        save_object_in_editor(false);
+                        should_refresh = true;
+                        break;
+                        break;
                 }
             }
+
             ui_editor->load_object(std::move(obj));
+            return should_refresh;
         }
 
     protected:
@@ -123,13 +134,13 @@ class ObjectMainPanel : public Gtk::Paned {
             this->add(ui_main_vbox);
 
             ui_button_new.signal_clicked().connect(
-                    sigc::mem_fun(*this, &ObjectMainPanel::on_create_object));
+                    sigc::mem_fun(*this, &ObjectMainPanel::on_create_button_clicked));
 
             ui_button_save.signal_clicked().connect(
-                    sigc::mem_fun(*this, &ObjectMainPanel::on_save_object));
+                    sigc::mem_fun(*this, &ObjectMainPanel::on_save_button_clicked));
 
             ui_selector->set_callback_on_object_selected([&](Tobject obj) {
-               on_object_selected(obj);
+               return on_object_selected(obj);
             });
 
             activate();

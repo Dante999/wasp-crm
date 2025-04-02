@@ -21,7 +21,7 @@ class ObjectSelectorPanel : public Gtk::Paned {
         Gtk::SearchEntry             ui_search_entry;
 
         std::vector<std::pair<Gtk::Label,T>>  m_cached_objects;
-        std::function<void(T)>                m_callback_on_object_selected;
+        std::function<bool(T)>                m_callback_on_object_selected;
 
 
     protected:
@@ -29,11 +29,12 @@ class ObjectSelectorPanel : public Gtk::Paned {
 
     private:
         void on_row_selected(Gtk::ListBoxRow* row);
+        int get_index_of_object_with_id(uint64_t obj_id);
 
     public:
         ObjectSelectorPanel(AppContext &context);
 
-        void set_callback_on_object_selected(std::function<void(T)> cb) { m_callback_on_object_selected = cb;}
+        void set_callback_on_object_selected(std::function<bool(T)> cb) { m_callback_on_object_selected = cb;}
         void select_object(const T& object);
         void refresh_object_list(const std::vector<T>& objects);
 };
@@ -64,7 +65,11 @@ void ObjectSelectorPanel<T>::on_row_selected(Gtk::ListBoxRow* row)
     if (row == nullptr) return;
 
     if (m_callback_on_object_selected) {
-        m_callback_on_object_selected(m_cached_objects.at(static_cast<size_t>(row->get_index())).second);
+        const auto should_refresh = m_callback_on_object_selected(
+                m_cached_objects.at(static_cast<size_t>(row->get_index())).second);
+
+        // TODO: somehow invoke ui_main_panel that refresh_object_list() is called
+        std::ignore = should_refresh;
     }
 }
 
@@ -74,6 +79,13 @@ void ObjectSelectorPanel<T>::refresh_object_list(const std::vector<T>& objects)
 {
     SPDLOG_INFO("refreshing object list with {} entries", objects.size());
 
+
+    uint64_t selected_object_id = 0;
+    auto current_selected_row = ui_element_list.get_selected_row();
+    if (current_selected_row != nullptr) {
+        selected_object_id = m_cached_objects.at(static_cast<size_t>(current_selected_row->get_index())).second.get_id();
+
+    }
 
     for (auto child : ui_element_list.get_children()) {
         ui_element_list.remove(*child);
@@ -96,22 +108,18 @@ void ObjectSelectorPanel<T>::refresh_object_list(const std::vector<T>& objects)
     }
 
         ui_element_list.show_all_children();
+
+        if (const auto row_index = get_index_of_object_with_id(selected_object_id); row_index > 0) {
+            auto row = ui_element_list.get_row_at_index(row_index);
+            ui_element_list.select_row(*row);
+        }
 }
 
 
 template <class T>
 void ObjectSelectorPanel<T>::select_object(const T& object)
 {
-    int target_index = -1;
-
-    for (size_t i=0; i < m_cached_objects.size(); ++i) {
-
-        const auto id = m_cached_objects.at(i).second.get_id();
-        if (id == object.get_id()) {
-            target_index = static_cast<int>(i);
-            break;
-        }
-    }
+    const int target_index = get_index_of_object_with_id(object.get_id());
 
     if (target_index != -1) {
         SPDLOG_INFO("selecting object at row with index {}", target_index);
@@ -123,5 +131,20 @@ void ObjectSelectorPanel<T>::select_object(const T& object)
     }
 }
 
+template <class T>
+int ObjectSelectorPanel<T>::get_index_of_object_with_id(uint64_t obj_id)
+{
+    int result = -1;
+    for (size_t i=0; i < m_cached_objects.size(); ++i) {
+
+        const auto id = m_cached_objects.at(i).second.get_id();
+        if (id == obj_id) {
+            result = static_cast<int>(i);
+            break;
+        }
+    }
+
+    return result;
+}
 
 #endif /* OBJECT_SELECTOR_PANEL_HPP */
