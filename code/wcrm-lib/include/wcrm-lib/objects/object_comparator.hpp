@@ -2,6 +2,8 @@
 #define OBJECT_COMPARATOR_HPP
 
 #include "wcrm-lib/objects/article.hpp"
+#include "wcrm-lib/objects/vendor.hpp"
+
 
 #include <string>
 #include <vector>
@@ -14,5 +16,6 @@ struct CompareDiff {
 
 
 std::vector<CompareDiff> get_object_diff(const Article& lhs, const Article& rhs);
+std::vector<CompareDiff> get_object_diff(const Vendor& lhs, const Vendor& rhs);
 
 #endif // OBJECT_COMPARATOR_HPP

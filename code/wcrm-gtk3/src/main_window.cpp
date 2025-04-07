@@ -3,7 +3,10 @@
 #include <gtkmm.h>
 #include <gdkmm/pixbuf.h>
 
-MainWindow::MainWindow(AppContext &app_context) : m_app_context{app_context}, ui_article_panel{app_context}
+MainWindow::MainWindow(AppContext &app_context) 
+    : m_app_context{app_context}
+    , ui_article_panel{app_context}
+    , ui_vendor_panel{app_context}
 {
     m_app_context.main_window = this;
     // Set title and border of the window
@@ -16,6 +19,7 @@ MainWindow::MainWindow(AppContext &app_context) : m_app_context{app_context}, ui
 
 
     ui_notebook.append_page(ui_article_panel, util_translate::translate("articles"));
+    ui_notebook.append_page(ui_vendor_panel, util_translate::translate("vendors"));
     ui_notebook.append_page(ui_customer_panel, util_translate::translate("customers"));
     ui_notebook.append_page(ui_invoice_panel, util_translate::translate("invoices"));
 

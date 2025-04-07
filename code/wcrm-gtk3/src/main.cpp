@@ -25,6 +25,7 @@
 #include "util_translate.hpp"
 
 #include "wcrm-lib/manager/article_manager_json.hpp"
+#include "wcrm-lib/manager/vendor_manager_json.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -39,7 +40,8 @@ int main(int argc, char *argv[])
     Gtk::Main kit(argc, argv);
 
     AppContext app_context(argv[1]);
-    app_context.article_manager      = std::make_shared<ArticleManagerJson>(app_context.basepath / "data" / "articles");
+    app_context.article_manager = std::make_shared<ArticleManagerJson>(app_context.basepath / "data" / "articles");
+    app_context.vendor_manager  = std::make_shared<VendorManagerJson>(app_context.basepath / "data" / "vendors");
 
     util_translate::init(app_context.translation_filepath);
 

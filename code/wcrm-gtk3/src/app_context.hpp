@@ -1,7 +1,10 @@
 #ifndef APP_CONFIG_HPP
 #define APP_CONFIG_HPP
 
-#include "wcrm-lib/manager/article_manager_json.hpp"
+#include "wcrm-lib/manager/manager_interface.hpp"
+#include "wcrm-lib/objects/article.hpp"
+#include "wcrm-lib/objects/vendor.hpp"
+
 #include "utils/config_file.hpp"
 
 // std
@@ -32,6 +35,7 @@ struct AppContext {
         const std::filesystem::path        icon_waspcrm;
 
         std::shared_ptr<IManager<Article>> article_manager;
+        std::shared_ptr<IManager<Vendor>>  vendor_manager;
 
         AppContext(std::filesystem::path _basepath) :
             basepath  { _basepath},

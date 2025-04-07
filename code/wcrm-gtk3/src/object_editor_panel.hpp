@@ -12,6 +12,8 @@
 #include "app_context.hpp"
 #include "wcrm-lib/objects/object_comparator.hpp"
 
+#include <spdlog/spdlog.h>
+
 template <class Tobject>
 class ObjectEditorPanel : public Gtk::Box {
 
