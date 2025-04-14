@@ -15,6 +15,7 @@ struct Article : public BaseObject {
         std::string description;
         std::string unit;
         std::string material;
+        std::string base64_image;
         Decimal<1> width_cm;
         Decimal<1> height_cm;
         Decimal<1> length_cm;

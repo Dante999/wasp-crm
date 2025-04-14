@@ -23,3 +23,12 @@ automatically and well handled by a database. So users which have a very large
 amount of customers, articles and invoices and need simultaneously access are
 probably wrong here.
 
+## TODOs
+- Dropdown list to select a vendor of an article
+- Banner with Wasp CRM logo and name on the main panel
+- Fix multiline input field
+- Fix layout which doesn't resize very well
+- base64 encoded and stored images of articles
+- Shortcuts like CTRL+S for saving
+- Multiline Notes field for Articles
+- Convert selector table to multiple columns like one for name, one for id etc.

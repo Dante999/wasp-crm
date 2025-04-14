@@ -1,14 +1,12 @@
 #include "wcrm-lib/manager/article_manager_json.hpp"
 
 // std
-#include <algorithm>
 #include <fstream>
 
 // thirdparty
 #include <nlohmann/json.hpp>
 #include <spdlog/spdlog.h>
 
-#include "utils/filesystem_utils.hpp"
 #include "utils/string_utils.hpp"
 
 using json = nlohmann::json;
@@ -43,10 +41,11 @@ Article ArticleManagerJson::read_json_file(const std::filesystem::path &filepath
     article.created_at = data["created_at"];
     article.modfied_at = data["last_modified_at"];
 
-    article.name        = get_or_default<std::string>(data, "name", "");
-    article.description = get_or_default<std::string>(data, "description", "");
-    article.unit        = get_or_default<std::string>(data, "unit", "");
-    article.material    = get_or_default<std::string>(data, "material", "");
+    article.name         = get_or_default<std::string>(data, "name", "");
+    article.description  = get_or_default<std::string>(data, "description", "");
+    article.unit         = get_or_default<std::string>(data, "unit", "");
+    article.material     = get_or_default<std::string>(data, "material", "");
+    article.base64_image = get_or_default<std::string>(data, "image", "");
 
     article.weight_kg.from_float(get_or_default<float>(data, "weight_kg", -1));
     article.width_cm.from_float(get_or_default<float>(data, "width_cm" , -1));
@@ -90,7 +89,7 @@ void ArticleManagerJson::do_refresh_list()
 
         SPDLOG_DEBUG("successfully loaded {}", article_filepath.string());
     }
-#endif 
+#endif
 
     for(const auto & entry : std::filesystem::directory_iterator(m_articles_basedir)) {
 
@@ -138,6 +137,7 @@ Article ArticleManagerJson::do_save_element(Article article)
         {"description"     , article.description},
         {"unit"            , article.unit},
         {"material"        , article.material},
+        {"image"           , article.base64_image},
         {"width_cm"        , article.width_cm.as_float()},
         {"length_cm"       , article.length_cm.as_float()},
         {"height_cm"       , article.height_cm.as_float()},
