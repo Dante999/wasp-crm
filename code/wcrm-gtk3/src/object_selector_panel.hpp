@@ -9,6 +9,7 @@
 #include <gtkmm/listbox.h>
 #include <gtkmm/paned.h>
 #include <gtkmm/searchentry.h>
+#include <gtkmm/scrolledwindow.h>
 #include <spdlog/spdlog.h>
 
 #include "app_context.hpp"
@@ -16,6 +17,7 @@
 template <class T>
 class ObjectSelectorPanel : public Gtk::Paned {
     private:
+        Gtk::ScrolledWindow          ui_scrolled_window_element_list;
         Gtk::ListBox                 ui_element_list;
         Gtk::Box                     ui_top_hbox;
         Gtk::SearchEntry             ui_search_entry;
@@ -46,10 +48,12 @@ ObjectSelectorPanel<T>::ObjectSelectorPanel([[maybe_unused]] AppContext &context
     ui_top_hbox.set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
     ui_top_hbox.pack_start(ui_search_entry, true, true);
 
+    ui_scrolled_window_element_list.add(ui_element_list);
+    ui_scrolled_window_element_list.set_policy(Gtk::POLICY_AUTOMATIC, Gtk::POLICY_AUTOMATIC);
 
     this->set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
     this->pack1(ui_top_hbox, false, false);
-    this->pack2(ui_element_list, true, false);
+    this->pack2(ui_scrolled_window_element_list, true, false);
 
     ui_element_list.signal_row_selected().connect(
         sigc::mem_fun(*this, &ObjectSelectorPanel::on_row_selected));
