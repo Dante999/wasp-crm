@@ -15,6 +15,7 @@ namespace utils {
 [[nodiscard]] const std::string str_remove_newlines(const std::string &text);
 
 [[nodiscard]] bool str_equals_ignorecase(const std::string &s1, const std::string &s2);
+[[nodiscard]] bool str_contains_ignorecase(const std::string &str, const std::string &substr);
 [[nodiscard]] bool str_equals_one_of(const std::string &s, const std::vector<std::string> &s_list);
 
 [[nodiscard]] std::string str_ltrim(const std::string &s);

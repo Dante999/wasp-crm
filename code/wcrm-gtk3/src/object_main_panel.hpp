@@ -143,6 +143,14 @@ class ObjectMainPanel : public Gtk::Paned {
                return on_object_selected(obj);
             });
 
+            ui_selector->set_callback_on_object_filter_changed([&](void) {
+                    m_manager->refresh_list();
+                    auto obj_list = m_manager->get_list();
+                    if (!obj_list.empty()) {
+                        ui_selector->refresh_object_list(obj_list);
+                    }
+            });
+
             activate();
 
             m_manager->refresh_list();

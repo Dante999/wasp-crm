@@ -13,6 +13,7 @@
 #include <spdlog/spdlog.h>
 
 #include "app_context.hpp"
+#include "utils/string_utils.hpp"
 
 template <class T>
 class ObjectSelectorPanel : public Gtk::Paned {
@@ -24,6 +25,7 @@ class ObjectSelectorPanel : public Gtk::Paned {
 
         std::vector<std::pair<Gtk::Label,T>>  m_cached_objects;
         std::function<bool(T)>                m_callback_on_object_selected;
+        std::function<void(void)>             m_callback_on_object_filter_changed;
 
 
     protected:
@@ -31,20 +33,23 @@ class ObjectSelectorPanel : public Gtk::Paned {
 
     private:
         void on_row_selected(Gtk::ListBoxRow* row);
+        void on_search_changed();
         int get_index_of_object_with_id(uint64_t obj_id);
 
     public:
         ObjectSelectorPanel(AppContext &context);
 
         void set_callback_on_object_selected(std::function<bool(T)> cb) { m_callback_on_object_selected = cb;}
+        void set_callback_on_object_filter_changed(std::function<void(void)> cb) { m_callback_on_object_filter_changed = cb;}
         void select_object(const T& object);
         void refresh_object_list(const std::vector<T>& objects);
 };
+// ---------------------------------------------------------------------------------------------------------------------
+
 
 template <class T>
 ObjectSelectorPanel<T>::ObjectSelectorPanel([[maybe_unused]] AppContext &context)
 {
-
     ui_top_hbox.set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
     ui_top_hbox.pack_start(ui_search_entry, true, true);
 
@@ -58,8 +63,17 @@ ObjectSelectorPanel<T>::ObjectSelectorPanel([[maybe_unused]] AppContext &context
     ui_element_list.signal_row_selected().connect(
         sigc::mem_fun(*this, &ObjectSelectorPanel::on_row_selected));
 
+    ui_search_entry.signal_search_changed().connect(
+            sigc::mem_fun(*this, &ObjectSelectorPanel::on_search_changed));
 }
 
+template <class T>
+void ObjectSelectorPanel<T>::on_search_changed()
+{
+    if (m_callback_on_object_filter_changed) {
+        m_callback_on_object_filter_changed();
+    }
+}
 
 template <class T>
 void ObjectSelectorPanel<T>::on_row_selected(Gtk::ListBoxRow* row)
@@ -99,7 +113,15 @@ void ObjectSelectorPanel<T>::refresh_object_list(const std::vector<T>& objects)
     m_cached_objects.clear();
     m_cached_objects.reserve(objects.size());
 
+    const std::string search_text = ui_search_entry.get_text();
+    SPDLOG_INFO("filtering for '{}'", search_text);
+
     for (const auto& object: objects) {
+
+        if (!utils::str_contains_ignorecase(get_element_display_name(object), search_text)) {
+            continue;
+        }
+
         m_cached_objects.emplace_back(
                 std::make_pair(
                     Gtk::Label(get_element_display_name(object), Gtk::Align::ALIGN_START, Gtk::Align::ALIGN_START),

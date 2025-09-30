@@ -90,6 +90,17 @@ bool str_equals_ignorecase(const std::string &s1, const std::string &s2)
     return s1_lower == s2_lower;
 }
 
+[[nodiscard]] bool str_contains_ignorecase(const std::string &str, const std::string &substr)
+{
+    std::string str_lower{str};
+    std::string substr_lower{substr};
+
+    transform(str_lower.begin(), str_lower.end(), str_lower.begin(), ::tolower);
+    transform(substr_lower.begin(), substr_lower.end(), substr_lower.begin(), ::tolower);
+
+    return str_lower.find(substr_lower) != std::string::npos;
+}
+
 std::string str_ltrim(const std::string &s)
 {
     size_t start = s.find_first_not_of(WHITESPACE);

@@ -12,7 +12,7 @@ class ArticleMainPanel : public ObjectMainPanel<Article> {
 
     public:
         ArticleMainPanel(AppContext &app_context)
-            : ObjectMainPanel(app_context, 
+            : ObjectMainPanel(app_context,
                               std::make_shared<ArticleEditor>(app_context),
                               std::make_shared<ArticleSelector>(app_context),
                               app_context.article_manager)
