@@ -63,6 +63,33 @@ struct TextInput {
     }
 };
 
+struct ObjectChooser {
+    struct Chooser : Gtk::Button{
+        void set_text(const std::string& text) {this->set_label(text);}
+        std::string get_text(void) const {return this->get_label();}
+    };
+    Gtk::Label label;
+    Chooser input;
+    std::function<void(void)> cb_on_choose_object;
+
+    void on_choose_clicked()
+    {
+        if (cb_on_choose_object) cb_on_choose_object();
+    }
+
+    ObjectChooser(const std::string label_text, const std::string input_text = "", int width = 20)
+    {
+        label.set_text(util_translate::translate(label_text));
+        std::ignore = input_text;
+        std::ignore = width;
+        //input.set_text(input_text);
+        //input.set_width_chars(width);
+        //input.set_max_width_chars(width);
+            input.signal_clicked().connect(
+                    sigc::mem_fun(*this, &ObjectChooser::on_choose_clicked));
+    }
+};
+
 struct TextMultilineInput {
     Gtk::Label label;
     Gtk::Entry input;

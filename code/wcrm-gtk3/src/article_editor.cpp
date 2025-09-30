@@ -1,7 +1,19 @@
 #include "article_editor.hpp"
 
 #include <spdlog/spdlog.h>
+#include "object_referencer_dialog.hpp"
+#include "wcrm-lib/objects/vendor.hpp"
+#include "vendor_selector.hpp"
 
+#include <regex>
+
+namespace
+{
+    std::string vendor_to_displayname(const Vendor& vendor)
+    {
+        return vendor.name + " (" + vendor.get_id_as_string() + ")";
+    }
+}
 
 void ArticleEditor::write_to_gui(const Article &article)
 {
@@ -92,4 +104,17 @@ ArticleEditor::ArticleEditor(AppContext &context) : ObjectEditorPanel(context)
     ui_frame_sales.add_left(row++, ui_sell_price);
 
     write_to_gui(m_object);
+
+    ui_vendor_name.cb_on_choose_object = [&]() {
+        ObjectReferencerDialog<Vendor> dialog(std::make_unique<VendorSelector>(m_app_context),
+                m_app_context.vendor_manager,
+                *m_app_context.main_window);
+
+        const auto vendor = dialog.run();
+
+        if (vendor.has_value()) {
+            ui_vendor_name.input.set_text( vendor_to_displayname(*vendor));
+        }
+
+    };
 }

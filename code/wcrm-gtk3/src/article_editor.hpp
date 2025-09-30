@@ -33,7 +33,7 @@ class ArticleEditor : public ObjectEditorPanel<Article> {
         util_gtk::TextInput           ui_article_weight{"weight_kg", ""};
 
         util_gtk::FrameFormGrid2      ui_frame_vendor{"purchasing"};
-        util_gtk::TextInput           ui_vendor_name{"vendor", ""};
+        util_gtk::ObjectChooser       ui_vendor_name{"vendor", ""};
         util_gtk::TextInput           ui_vendor_article_id{"article_id", ""};
         util_gtk::TextInput           ui_vendor_article_name{"article_name", ""};
         util_gtk::TextInput           ui_vendor_article_description{"article_description", ""};
