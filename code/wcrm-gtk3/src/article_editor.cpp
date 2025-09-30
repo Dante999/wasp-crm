@@ -41,6 +41,20 @@ void ArticleEditor::write_to_gui(const Article &article)
 {
     SPDLOG_INFO("writing to gui '{} {}'", article.get_id_as_string(), article.name);
 
+    std::filesystem::path img_path = m_app_context.basepath / "data/images" / (article.get_id_as_string() + ".jpg");
+
+    if (!std::filesystem::exists(img_path)) {
+        img_path = m_app_context.basepath / "resources/image-placeholder.svg";
+    }
+
+    SPDLOG_INFO("loading image for article from path {}", img_path.string());
+    Glib::RefPtr<Gdk::Pixbuf> pixbuf = Gdk::Pixbuf::create_from_file(img_path);
+
+    Glib::RefPtr<Gdk::Pixbuf> scaled = pixbuf->scale_simple(
+            128, 128, Gdk::INTERP_BILINEAR);
+
+    ui_image.set(scaled);
+
     value_to_gui(article.get_id_as_string() , ui_article_id);
     value_to_gui(article.created_at         , ui_created_at);
     value_to_gui(article.modfied_at         , ui_last_modified);
@@ -94,7 +108,6 @@ ArticleEditor::ArticleEditor(AppContext &context) : ObjectEditorPanel(context)
 {
     ui_flowbox.set_selection_mode(Gtk::SelectionMode::SELECTION_NONE);
 
-    ui_image = Gtk::Image{m_app_context.basepath / "resources/image-placeholder.svg"};
     ui_flowbox.add(ui_frame_system_info);
     ui_frame_system_info.add_element(ui_article_id);
     ui_frame_system_info.add_element(ui_created_at);
