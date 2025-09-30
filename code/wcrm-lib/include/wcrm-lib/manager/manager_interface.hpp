@@ -4,6 +4,7 @@
 #include <cstdint>
 #include <vector>
 #include <algorithm>
+#include <optional>
 
 #include "utils/datetime_utils.hpp"
 
@@ -32,6 +33,15 @@ struct IManager {
         }
 
         std::vector<T> get_list() { return m_elements; }
+
+        std::optional<T> get_element_by_id(uint64_t id)
+        {
+            auto result = std::find_if(std::begin(m_elements),
+                                       std::end(m_elements),
+                                       [id](const T& e) {return id == e.get_id();});
+
+            return (result != std::end(m_elements)) ? std::make_optional(*result) : std::nullopt;
+        }
 
         void refresh_list()
         {

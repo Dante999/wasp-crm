@@ -52,7 +52,7 @@ Article ArticleManagerJson::read_json_file(const std::filesystem::path &filepath
     article.length_cm.from_float(get_or_default<float>(data, "length_cm", -1));
     article.height_cm.from_float(get_or_default<float>(data, "height_cm", -1));
 
-    article.vendor_name                = get_or_default<std::string>(data, "vendor_name", "");
+    article.vendor_id                  = get_or_default<uint64_t>(data, "vendor_id", 0);
     article.vendor_article_id          = get_or_default<std::string>(data, "vendor_article_id", "");
     article.vendor_article_name        = get_or_default<std::string>(data, "vendor_article_name", "");
     article.vendor_article_description = get_or_default<std::string>(data, "vendor_article_description", "");
@@ -130,6 +130,7 @@ Article ArticleManagerJson::do_save_element(Article article)
 
     // clang-format off
     json data = {
+        {"_version"        , 1},
         {"id"              , article.get_id()},
         {"created_at"      , article.created_at},
         {"last_modified_at", article.modfied_at},
@@ -142,7 +143,7 @@ Article ArticleManagerJson::do_save_element(Article article)
         {"length_cm"       , article.length_cm.as_float()},
         {"height_cm"       , article.height_cm.as_float()},
         {"weight_kg"       , article.weight_kg.as_float()},
-        {"vendor_name"     , article.vendor_name},
+        {"vendor_id"       , article.vendor_id},
         {"vendor_article_id"         , article.vendor_article_id},
         {"vendor_article_name"       , article.vendor_article_name},
         {"vendor_article_description", article.vendor_article_description},

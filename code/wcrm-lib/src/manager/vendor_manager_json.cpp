@@ -75,6 +75,7 @@ Vendor VendorManagerJson::do_save_element(Vendor vendor)
 
     // clang-format off
     json data = {
+        {"_version"        , 1},
         {"id"              , vendor.get_id()},
         {"created_at"      , vendor.created_at},
         {"last_modified_at", vendor.modfied_at},

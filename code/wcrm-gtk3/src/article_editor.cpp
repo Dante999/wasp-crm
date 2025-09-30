@@ -5,13 +5,35 @@
 #include "wcrm-lib/objects/vendor.hpp"
 #include "vendor_selector.hpp"
 
-#include <regex>
+#include <cassert>
 
 namespace
 {
     std::string vendor_to_displayname(const Vendor& vendor)
     {
         return vendor.name + " (" + vendor.get_id_as_string() + ")";
+    }
+
+    uint64_t vendor_id_from_displayname(const std::string& displayname)
+    {
+        if (displayname.empty()) return 0;
+
+        size_t pos_start = displayname.find('(');
+        size_t pos_end   = displayname.find(')');
+
+        assert(pos_start != std::string::npos);
+        assert(pos_end   != std::string::npos);
+        assert(pos_start < pos_end);
+        pos_start++;
+        auto substr = displayname.substr(pos_start, pos_end-pos_start);
+
+        pos_start = substr.find('-');
+        assert(pos_start != std::string::npos);
+        assert(pos_start < substr.length());
+        pos_start++;
+        substr = substr.substr(pos_start, substr.length()-pos_start);
+
+        return std::stoul(substr);
     }
 }
 
@@ -32,7 +54,9 @@ void ArticleEditor::write_to_gui(const Article &article)
     value_to_gui(article.width_cm    , ui_article_width);
     value_to_gui(article.height_cm   , ui_article_height);
 
-    value_to_gui(article.vendor_name                , ui_vendor_name);
+    auto vendor = m_app_context.vendor_manager->get_element_by_id(article.vendor_id);
+    std::string vendor_displayname = vendor.has_value() ? vendor_to_displayname(*vendor) : "";
+    value_to_gui(vendor_displayname                 , ui_vendor_name);
     value_to_gui(article.vendor_article_id          , ui_vendor_article_id);
     value_to_gui(article.vendor_article_name        , ui_vendor_article_name);
     value_to_gui(article.vendor_article_description , ui_vendor_article_description);
@@ -55,7 +79,8 @@ void ArticleEditor::read_from_gui(Article &article)
     value_from_gui(article.width_cm    , ui_article_width);
     value_from_gui(article.height_cm   , ui_article_height);
 
-    value_from_gui(article.vendor_name                , ui_vendor_name);
+    article.vendor_id = vendor_id_from_displayname(ui_vendor_name.input.get_text());
+
     value_from_gui(article.vendor_article_id          , ui_vendor_article_id);
     value_from_gui(article.vendor_article_name        , ui_vendor_article_name);
     value_from_gui(article.vendor_article_description , ui_vendor_article_description);

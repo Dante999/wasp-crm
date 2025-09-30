@@ -21,7 +21,7 @@ struct Article : public BaseObject {
         Decimal<1> length_cm;
         Decimal<3> weight_kg;
 
-        std::string vendor_name;
+        uint64_t vendor_id;
         std::string vendor_article_id;
         std::string vendor_article_name;
         std::string vendor_article_description;

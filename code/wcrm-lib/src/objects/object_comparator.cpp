@@ -15,6 +15,9 @@ namespace {
        if constexpr (std::is_same_v<Tvalue, std::string>) {
             if (lhs != rhs) diff_vec.push_back({attr_name, lhs, rhs});
        }
+       else if constexpr (std::is_same_v<Tvalue, uint64_t>) {
+            if (lhs != rhs) diff_vec.push_back({attr_name, std::to_string(lhs), std::to_string(rhs)});
+       }
        else {
             if (lhs.as_string() != rhs.as_string()) diff_vec.push_back({attr_name, lhs.as_string(), rhs.as_string()});
        }
@@ -35,7 +38,7 @@ std::vector<CompareDiff> get_object_diff(const Article& lhs, const Article& rhs)
     COMPARE_OBJECT(diff, length_cm  , lhs, rhs);
     COMPARE_OBJECT(diff, weight_kg  , lhs, rhs);
 
-    COMPARE_OBJECT(diff, vendor_name                , lhs, rhs);
+    COMPARE_OBJECT(diff, vendor_id                  , lhs, rhs);
     COMPARE_OBJECT(diff, vendor_article_id          , lhs, rhs);
     COMPARE_OBJECT(diff, vendor_article_name        , lhs, rhs);
     COMPARE_OBJECT(diff, vendor_article_description , lhs, rhs);
