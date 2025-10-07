@@ -66,3 +66,21 @@ std::vector<CompareDiff> get_object_diff(const Vendor& lhs, const Vendor& rhs)
 
     return diff;
 }
+
+std::vector<CompareDiff> get_object_diff(const Customer& lhs, const Customer& rhs)
+{
+    std::vector<CompareDiff> diff;
+
+    COMPARE_OBJECT(diff, firstname  , lhs, rhs);
+    COMPARE_OBJECT(diff, lastname   , lhs, rhs);
+    COMPARE_OBJECT(diff, description, lhs, rhs);
+    COMPARE_OBJECT(diff, street     , lhs, rhs);
+    COMPARE_OBJECT(diff, zip_code   , lhs, rhs);
+    COMPARE_OBJECT(diff, city       , lhs, rhs);
+    COMPARE_OBJECT(diff, country    , lhs, rhs);
+    COMPARE_OBJECT(diff, email      , lhs, rhs);
+    COMPARE_OBJECT(diff, homepage   , lhs, rhs);
+    COMPARE_OBJECT(diff, phone      , lhs, rhs);
+
+    return diff;
+}

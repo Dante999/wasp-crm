@@ -7,6 +7,7 @@ MainWindow::MainWindow(AppContext &app_context)
     : m_app_context{app_context}
     , ui_article_panel{app_context}
     , ui_vendor_panel{app_context}
+    , ui_customer_panel{app_context}
 {
     m_app_context.main_window = this;
     // Set title and border of the window

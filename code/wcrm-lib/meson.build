@@ -5,6 +5,7 @@ wcrm_lib_includes = include_directories('./include')
 wcrm_lib_sources  = [
     'src/manager/article_manager_json.cpp',
     'src/manager/vendor_manager_json.cpp',
+    'src/manager/customer_manager_json.cpp',
     'src/objects/object_comparator.cpp'
 ]
 

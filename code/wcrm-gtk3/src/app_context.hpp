@@ -4,6 +4,7 @@
 #include "wcrm-lib/manager/manager_interface.hpp"
 #include "wcrm-lib/objects/article.hpp"
 #include "wcrm-lib/objects/vendor.hpp"
+#include "wcrm-lib/objects/customer.hpp"
 
 #include "utils/config_file.hpp"
 
@@ -34,8 +35,9 @@ struct AppContext {
         const std::filesystem::path        icon_save_file;
         const std::filesystem::path        icon_waspcrm;
 
-        std::shared_ptr<IManager<Article>> article_manager;
-        std::shared_ptr<IManager<Vendor>>  vendor_manager;
+        std::shared_ptr<IManager<Article>>  article_manager;
+        std::shared_ptr<IManager<Vendor>>   vendor_manager;
+        std::shared_ptr<IManager<Customer>> customer_manager;
 
         AppContext(std::filesystem::path _basepath) :
             basepath  { _basepath},
