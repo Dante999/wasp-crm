@@ -7,9 +7,11 @@
 #include <gtkmm/grid.h>
 #include <gtkmm/enums.h>
 #include <gtkmm/button.h>
-
+#include <gtkmm/textbuffer.h>
+#include <gtkmm/textview.h>
+#include <gtkmm/scrolledwindow.h>
 #include "util_translate.hpp"
-
+#include "utils/string_utils.hpp"
 
 #include <filesystem>
 #include <type_traits>
@@ -31,10 +33,10 @@ template <typename Tgui, typename Tvalue>
 void value_from_gui(Tvalue& value, const Tgui &ui)
 {
     if constexpr (std::is_same_v<Tvalue, std::string>) {
-        value = ui.input.get_text();
+        value = utils::str_trim(ui.input.get_text());
     }
     else {
-        value.from_string(ui.input.get_text());
+        value.from_string(utils::str_trim(ui.input.get_text()));
     }
 }
 
@@ -91,14 +93,60 @@ struct ObjectChooser {
 };
 
 struct TextMultilineInput {
-    Gtk::Label label;
-    Gtk::Entry input;
+    Gtk::Label    label;
+#if 1
+    struct TextContent : Gtk::Frame
+    {
+        Gtk::ScrolledWindow window;
+        Gtk::TextView       textview;
 
-    TextMultilineInput(const std::string label_text, const std::string input_text = "", int width = 20)
+        TextContent()
+        {
+            textview.set_can_focus(true);
+            textview.set_accepts_tab(false);
+            textview.set_wrap_mode(Gtk::WRAP_WORD);
+
+            window.set_focus_on_click(false);
+            window.add(textview);
+            window.set_hexpand(true);
+            window.set_vexpand(true);
+            window.set_border_width(3);
+
+            add(window);
+        }
+        std::string get_text() const { return textview.get_buffer()->get_text();}
+        void set_text(const std::string& text) { textview.get_buffer()->set_text(text);}
+    } input;
+    #else
+    struct TextContent : Gtk::ScrolledWindow
+    {
+        Gtk::TextView       textview;
+
+        TextContent()
+        {
+            //set_can_focus(false);
+            //textview.set_can_focus(true);
+            set_focus_on_click(false);
+            set_can_focus(false);
+
+            textview.set_focus_on_click(true);
+            textview.set_can_focus(true);
+            //window.add(textview);
+            //window.set_hexpand(true);
+            set_border_width(3);
+
+            add(textview);
+        }
+
+        std::string get_text() const { return textview.get_buffer()->get_text();}
+        void set_text(const std::string& text) { textview.get_buffer()->set_text(text);}
+    } input;
+
+    #endif
+    TextMultilineInput(const std::string label_text, const std::string input_text = "")
     {
         label.set_text(util_translate::translate(label_text));
-        input.set_text(input_text);
-        input.set_width_chars(width);
+        input.set_text(" " + input_text);
     }
 };
 
@@ -153,10 +201,10 @@ struct FrameFormGrid2 : FrameFormGrid {
     }
 
     template <class T>
-    void add_full_width(int row, T &element)
+    void add_full_width(int row, T &element, int height = 1)
     {
-        m_grid.attach(element.label, 0, row, 1, 1);
-        m_grid.attach(element.input, 1, row, 5, 1);
+        m_grid.attach(element.label, 0, row, 1, height);
+        m_grid.attach(element.input, 1, row, 5, height);
     }
 };
 

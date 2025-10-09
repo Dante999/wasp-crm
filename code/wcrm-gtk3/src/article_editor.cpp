@@ -106,17 +106,20 @@ void ArticleEditor::read_from_gui(Article &article)
 
 ArticleEditor::ArticleEditor(AppContext &context) : ObjectEditorPanel(context)
 {
-    ui_flowbox.set_selection_mode(Gtk::SelectionMode::SELECTION_NONE);
 
-    ui_flowbox.add(ui_frame_system_info);
+    //ui_flowbox.set_selection_mode(Gtk::SelectionMode::SELECTION_NONE);
+    ui_mainpanel.add(ui_notebook);
+
+    ui_base_info_pane.add(ui_frame_system_info);
+    ui_frame_system_info.set_hexpand(false);
     ui_frame_system_info.add_element(ui_article_id);
     ui_frame_system_info.add_element(ui_created_at);
     ui_frame_system_info.add_element(ui_last_modified);
+    // void attach(Widget& child, int left, int top, int width =  1, int height =  1);
     ui_frame_system_info.m_grid.attach(ui_image, 2, 0, 1, 3);
 
-
     int row = 0;
-    ui_flowbox.add(ui_frame_base_info);
+    ui_base_info_pane.add(ui_frame_base_info);
     ui_frame_base_info.add_full_width(row++, ui_article_name);
     ui_frame_base_info.add_full_width(row++, ui_article_description);
     ui_frame_base_info.add_left(row, ui_article_unit);
@@ -128,7 +131,7 @@ ArticleEditor::ArticleEditor(AppContext &context) : ObjectEditorPanel(context)
 
 
     row = 0;
-    ui_flowbox.add(ui_frame_vendor);
+    ui_purchase_pane.add(ui_frame_vendor);
     ui_frame_vendor.add_full_width(row++, ui_vendor_name);
     ui_frame_vendor.add_left( row, ui_vendor_article_id);
     ui_frame_vendor.add_right(row++, ui_vendor_article_price);
@@ -138,8 +141,12 @@ ArticleEditor::ArticleEditor(AppContext &context) : ObjectEditorPanel(context)
     ui_frame_vendor.add_full_width(row++, ui_vendor_article_weblink);
 
     row = 0;
-    ui_flowbox.add(ui_frame_sales);
+    ui_sales_pane.add(ui_frame_sales);
     ui_frame_sales.add_left(row++, ui_sell_price);
+
+    ui_notebook.append_page(ui_base_info_pane, util_translate::translate("base_data"));
+    ui_notebook.append_page(ui_purchase_pane,  util_translate::translate("purchasing"));
+    ui_notebook.append_page(ui_sales_pane,     util_translate::translate("sales"));
 
     write_to_gui(m_object);
 

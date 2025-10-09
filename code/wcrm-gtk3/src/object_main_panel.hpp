@@ -59,7 +59,7 @@ class ObjectMainPanel : public Gtk::Paned {
 
                 ss << fmt::format("{} unsaved changes!\n", unsaved_changes.size());
                 for (const auto &diff : unsaved_changes) {
-                    ss << fmt::format("\t{:<20}: {:<20} -> {}\n",
+                    ss << fmt::format("\tAttribute: {}\n\tlhs: '{}'\n\trhs: '{}'\n",
                             diff.attribute_name,
                             diff.value_lhs,
                             diff.value_rhs);

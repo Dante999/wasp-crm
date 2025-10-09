@@ -43,10 +43,8 @@ void CustomerEditor::read_from_gui(Customer &customer)
 
 CustomerEditor::CustomerEditor(AppContext &context) : ObjectEditorPanel(context)
 {
-    ui_flowbox.set_selection_mode(Gtk::SelectionMode::SELECTION_NONE);
-
     ui_image = Gtk::Image{m_app_context.basepath / "resources/image-placeholder.svg"};
-    ui_flowbox.add(ui_frame_system_info);
+    ui_mainpanel.add(ui_frame_system_info);
     ui_frame_system_info.add_element(ui_customer_id);
     ui_frame_system_info.add_element(ui_created_at);
     ui_frame_system_info.add_element(ui_last_modified);
@@ -54,21 +52,21 @@ CustomerEditor::CustomerEditor(AppContext &context) : ObjectEditorPanel(context)
 
 
     int row = 0;
-    ui_flowbox.add(ui_frame_base_info);
+    ui_mainpanel.add(ui_frame_base_info);
     ui_frame_base_info.add_full_width(row++, ui_firstname);
     ui_frame_base_info.add_full_width(row++, ui_lastname);
     ui_frame_base_info.add_full_width(row++, ui_gender);
     ui_frame_base_info.add_full_width(row++, ui_description);
 
     row = 0;
-    ui_flowbox.add(ui_frame_address);
+    ui_mainpanel.add(ui_frame_address);
     ui_frame_address.add_full_width(row++, ui_street);
     ui_frame_address.add_full_width(row++, ui_zip_code);
     ui_frame_address.add_full_width(row++, ui_city);
     ui_frame_address.add_full_width(row++, ui_country);
 
     row = 0;
-    ui_flowbox.add(ui_frame_contact);
+    ui_mainpanel.add(ui_frame_contact);
     ui_frame_contact.add_full_width(row++, ui_email);
     ui_frame_contact.add_full_width(row++, ui_homepage);
     ui_frame_contact.add_full_width(row++, ui_phone);

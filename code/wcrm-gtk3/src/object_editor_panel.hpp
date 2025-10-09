@@ -22,9 +22,9 @@ class ObjectEditorPanel : public Gtk::Box {
 
 
     protected:
-        AppContext&    m_app_context;
-        Tobject        m_object{0};
-        Gtk::FlowBox   ui_flowbox;
+        AppContext&  m_app_context;
+        Tobject      m_object{0};
+        Gtk::VBox    ui_mainpanel;
 
         virtual void write_to_gui(const Tobject &object) = 0;
         virtual void read_from_gui(Tobject &object)      = 0;
@@ -34,10 +34,8 @@ class ObjectEditorPanel : public Gtk::Box {
         {
             set_orientation(Gtk::Orientation::ORIENTATION_VERTICAL);
 
-            ui_flowbox.set_orientation(Gtk::Orientation::ORIENTATION_HORIZONTAL);
-            ui_flowbox.set_can_focus(false);
-
-            this->pack_start(ui_flowbox, true, true);
+            this->set_margin_left(10);
+            this->pack_start(ui_mainpanel, true, true);
         }
 
         std::vector<CompareDiff> get_unsaved_changes()

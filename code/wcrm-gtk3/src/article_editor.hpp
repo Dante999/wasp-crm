@@ -2,11 +2,12 @@
 #define ARTICLE_EDITOR_HPP
 
 #include <gtkmm/box.h>
+#include <gtkmm/enums.h>
 #include <gtkmm/flowbox.h>
 #include <gtkmm/frame.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/image.h>
-
+#include <gtkmm/notebook.h>
 #include "wcrm-lib/objects/article.hpp"
 
 #include "object_editor_panel.hpp"
@@ -14,6 +15,11 @@
 
 class ArticleEditor : public ObjectEditorPanel<Article> {
     private:
+        Gtk::Notebook ui_notebook;
+        Gtk::Box     ui_base_info_pane {Gtk::ORIENTATION_VERTICAL};
+        Gtk::Box     ui_purchase_pane  {Gtk::ORIENTATION_VERTICAL};
+        Gtk::Box     ui_sales_pane     {Gtk::ORIENTATION_VERTICAL};
+
         util_gtk::Placeholder             ui_placeholder;
 
         util_gtk::FrameFormGridRow<1>     ui_frame_system_info{"system_info"};
@@ -36,7 +42,7 @@ class ArticleEditor : public ObjectEditorPanel<Article> {
         util_gtk::ObjectChooser       ui_vendor_name{"vendor", ""};
         util_gtk::TextInput           ui_vendor_article_id{"article_id", ""};
         util_gtk::TextInput           ui_vendor_article_name{"article_name", ""};
-        util_gtk::TextInput           ui_vendor_article_description{"article_description", ""};
+        util_gtk::TextMultilineInput  ui_vendor_article_description{"article_description", ""};
         util_gtk::TextInput           ui_vendor_article_weblink{"weblink", ""};
         util_gtk::TextInput           ui_vendor_article_price{"unit_price_euro", ""};
 
