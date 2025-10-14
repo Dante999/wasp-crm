@@ -7,6 +7,7 @@ wcrm_gtk3_sources  = [
     'src/main.cpp',
     'src/main_window.cpp',
     'src/article_editor.cpp',
+    'src/invoice_editor.cpp',
     'src/customer_editor.cpp',
     'src/vendor_editor.cpp',
     'src/util_translate.cpp',

@@ -5,6 +5,7 @@
 #include "wcrm-lib/objects/article.hpp"
 #include "wcrm-lib/objects/vendor.hpp"
 #include "wcrm-lib/objects/customer.hpp"
+#include "wcrm-lib/objects/invoice.hpp"
 
 #include "utils/config_file.hpp"
 
@@ -38,6 +39,7 @@ struct AppContext {
         std::shared_ptr<IManager<Article>>  article_manager;
         std::shared_ptr<IManager<Vendor>>   vendor_manager;
         std::shared_ptr<IManager<Customer>> customer_manager;
+        std::shared_ptr<IManager<Invoice>>  invoice_manager;
 
         AppContext(std::filesystem::path _basepath) :
             basepath  { _basepath},

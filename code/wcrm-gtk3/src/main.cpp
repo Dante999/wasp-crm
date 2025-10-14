@@ -1,22 +1,3 @@
-//$Id: main.cc 836 2007-05-09 03:02:38Z jjongsma $ -*- c++ -*-
-
-/* gtkmm example Copyright (C) 2002 gtkmm development team
- *
- * This program is free software; you can redistribute it and/or modify
- * it under the terms of the GNU General Public License version 2
- * as published by the Free Software Foundation.
- *
- * This program is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
- */
-
-// thirdparty
 #include <gtkmm/main.h>
 #include <spdlog/spdlog.h>
 
@@ -27,6 +8,7 @@
 #include "wcrm-lib/manager/article_manager_json.hpp"
 #include "wcrm-lib/manager/vendor_manager_json.hpp"
 #include "wcrm-lib/manager/customer_manager_json.hpp"
+#include "wcrm-lib/manager/invoice_manager_json.hpp"
 
 int main(int argc, char *argv[])
 {
@@ -41,9 +23,10 @@ int main(int argc, char *argv[])
     Gtk::Main kit(argc, argv);
 
     AppContext app_context(argv[1]);
-    app_context.article_manager = std::make_shared<ArticleManagerJson>(app_context.basepath / "data" / "articles");
-    app_context.vendor_manager  = std::make_shared<VendorManagerJson>(app_context.basepath / "data" / "vendors");
-    app_context.customer_manager  = std::make_shared<CustomerManagerJson>(app_context.basepath / "data" / "customers");
+    app_context.article_manager  = std::make_shared<ArticleManagerJson>(app_context.basepath / "data" / "articles");
+    app_context.vendor_manager   = std::make_shared<VendorManagerJson>(app_context.basepath / "data" / "vendors");
+    app_context.customer_manager = std::make_shared<CustomerManagerJson>(app_context.basepath / "data" / "customers");
+    app_context.invoice_manager  = std::make_shared<InvoiceManagerJson>(app_context.basepath / "data" / "invoices");
 
     util_translate::init(app_context.translation_filepath);
 

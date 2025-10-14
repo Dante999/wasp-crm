@@ -84,3 +84,13 @@ std::vector<CompareDiff> get_object_diff(const Customer& lhs, const Customer& rh
 
     return diff;
 }
+
+std::vector<CompareDiff> get_object_diff(const Invoice& lhs, const Invoice& rhs)
+{
+    std::vector<CompareDiff> diff;
+
+    // TODO
+    std::ignore = lhs;
+    std::ignore = rhs;
+    return diff;
+}
