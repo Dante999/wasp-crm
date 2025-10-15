@@ -36,10 +36,10 @@ Invoice InvoiceManagerJson::read_json_file(const std::filesystem::path &filepath
     invoice.created_at = data["created_at"];
     invoice.modfied_at = data["last_modified_at"];
     
-    invoice.payee_field = data["payee_field"];
-    //invoice.payee_firstname = get_or_default<std::string>(data, "payee_firstname", "");
-    //invoice.payee_lastname  = get_or_default<std::string>(data, "payee_lastname", "");
-    //invoice.payee_street    = get_or_default<std::string>(data, "payee_street", "");
+    invoice.payee_field  = data["payee_field"];
+    invoice.text_subject = get_or_default<std::string>(data, "text_subject", "");
+    invoice.text_opening = get_or_default<std::string>(data, "text_opening", "");
+    invoice.text_closing = get_or_default<std::string>(data, "text_closing", "");
     //invoice.payee_zip_code  = get_or_default<std::string>(data, "payee_zip_code", "");
     //invoice.payee_city      = get_or_default<std::string>(data, "payee_city", "");
     //invoice.payee_country   = get_or_default<std::string>(data, "payee_country", "");
@@ -78,12 +78,9 @@ Invoice InvoiceManagerJson::do_save_element(Invoice invoice)
         {"last_modified_at", invoice.modfied_at},
         {"customer_id"     , invoice.customer_id},
         {"payee_field"     , invoice.payee_field},
-        //{"payee_firstname" , invoice.payee_firstname},
-        //{"payee_lastname"  , invoice.payee_lastname},
-        //{"payee_street"    , invoice.payee_street},
-        //{"payee_zip_code"  , invoice.payee_zip_code},
-        //{"payee_city"      , invoice.payee_city},
-        //{"payee_country"   , invoice.payee_country},
+        {"text_subject"    , invoice.text_subject},
+        {"text_opening"    , invoice.text_opening},
+        {"text_closing"    , invoice.text_closing},
     };
     // clang-format on
 

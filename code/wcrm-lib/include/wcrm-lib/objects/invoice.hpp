@@ -14,6 +14,9 @@ struct Invoice : public BaseObject {
 
         uint64_t customer_id;
         std::string payee_field;
+        std::string text_subject;
+        std::string text_opening;
+        std::string text_closing;
 
         Date invoice_date;
         Date due_date;

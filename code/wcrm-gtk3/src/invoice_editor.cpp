@@ -4,6 +4,36 @@
 #include "object_referencer_dialog.hpp"
 #include "customer_selector.hpp"
 
+namespace
+{
+    std::string customer_to_displayname(const Customer& customer)
+    {
+        return customer.firstname + " " + customer.lastname + " (" + customer.get_id_as_string() + ")";
+    }
+
+    uint64_t customer_id_from_displayname(const std::string& displayname)
+    {
+        if (displayname.empty()) return 0;
+
+        size_t pos_start = displayname.find('(');
+        size_t pos_end   = displayname.find(')');
+
+        assert(pos_start != std::string::npos);
+        assert(pos_end   != std::string::npos);
+        assert(pos_start < pos_end);
+        pos_start++;
+        auto substr = displayname.substr(pos_start, pos_end-pos_start);
+
+        pos_start = substr.find('-');
+        assert(pos_start != std::string::npos);
+        assert(pos_start < substr.length());
+        pos_start++;
+        substr = substr.substr(pos_start, substr.length()-pos_start);
+
+        return std::stoul(substr);
+    }
+}
+
 void InvoiceEditor::write_to_gui(const Invoice &invoice)
 {
     SPDLOG_INFO("writing to gui '{}'", invoice.get_id_as_string());
@@ -11,7 +41,15 @@ void InvoiceEditor::write_to_gui(const Invoice &invoice)
     value_to_gui(invoice.get_id_as_string() , ui_invoice_id);
     value_to_gui(invoice.created_at         , ui_created_at);
     value_to_gui(invoice.modfied_at         , ui_last_modified);
+    
+    auto customer = m_app_context.customer_manager->get_element_by_id(invoice.customer_id);
+    std::string customer_displayname = customer.has_value() ? customer_to_displayname(*customer) : "";
 
+    value_to_gui(customer_displayname,  ui_customer);
+    value_to_gui(invoice.payee_field , ui_payee_field);
+    value_to_gui(invoice.text_subject, ui_text_subject);
+    value_to_gui(invoice.text_opening, ui_text_opening);
+    value_to_gui(invoice.text_closing, ui_text_closing);
     //value_to_gui(invoice.payee_firstname                , ui_firstname);
     //value_to_gui(invoice.payee_lastname                 , ui_lastname);
     //value_to_gui(gender_to_string(invoice.payee_gender) , ui_gender);
@@ -25,6 +63,13 @@ void InvoiceEditor::read_from_gui(Invoice &invoice)
 {
     SPDLOG_INFO("reading from gui '{}'", invoice.get_id_as_string());
 
+    invoice.customer_id = customer_id_from_displayname(ui_customer.input.get_text());
+
+    value_from_gui(invoice.payee_field , ui_payee_field);
+    value_from_gui(invoice.text_subject, ui_text_subject);
+    value_from_gui(invoice.text_opening, ui_text_opening);
+    value_from_gui(invoice.text_closing, ui_text_closing);
+
     //value_from_gui(invoice.payee_firstname   , ui_firstname);
     //value_from_gui(invoice.payee_lastname    , ui_lastname);
     //invoice.payee_gender = gender_from_string(ui_gender.input.get_text());
@@ -36,8 +81,10 @@ void InvoiceEditor::read_from_gui(Invoice &invoice)
 
 InvoiceEditor::InvoiceEditor(AppContext &context) : ObjectEditorPanel(context)
 {
+    ui_mainpanel.add(ui_notebook);
+    
+    ui_base_info_pane.add(ui_frame_system_info);
     ui_image = Gtk::Image{m_app_context.basepath / "resources/image-placeholder.svg"};
-    ui_mainpanel.add(ui_frame_system_info);
     ui_frame_system_info.add_element(ui_invoice_id);
     ui_frame_system_info.add_element(ui_created_at);
     ui_frame_system_info.add_element(ui_last_modified);
@@ -45,10 +92,13 @@ InvoiceEditor::InvoiceEditor(AppContext &context) : ObjectEditorPanel(context)
 
 
     int row = 0;
-    ui_mainpanel.add(ui_frame_base_info);
+    ui_payee_text_pane.add(ui_frame_base_info);
     ui_frame_base_info.add_full_width(row++, ui_customer);
     ui_frame_base_info.add_full_width(row++, ui_placeholder);
     ui_frame_base_info.add_full_width(row++, ui_payee_field);
+    ui_frame_base_info.add_full_width(row++, ui_text_subject);
+    ui_frame_base_info.add_full_width(row++, ui_text_opening);
+    ui_frame_base_info.add_full_width(row++, ui_text_closing);
     //ui_frame_base_info.add_left(row, ui_firstname);
     //ui_frame_base_info.add_right(row++, ui_street);
 
@@ -61,12 +111,8 @@ InvoiceEditor::InvoiceEditor(AppContext &context) : ObjectEditorPanel(context)
 
     //row = 0;
     //ui_mainpanel.add(ui_frame_address);
-
-    row = 0;
-    ui_mainpanel.add(ui_frame_contact);
-    ui_frame_contact.add_full_width(row++, ui_email);
-    ui_frame_contact.add_full_width(row++, ui_homepage);
-    ui_frame_contact.add_full_width(row++, ui_phone);
+    ui_notebook.append_page(ui_base_info_pane, util_translate::translate("base_data"));
+    ui_notebook.append_page(ui_payee_text_pane, util_translate::translate("payee"));
 
     write_to_gui(m_object);
 
@@ -78,7 +124,7 @@ InvoiceEditor::InvoiceEditor(AppContext &context) : ObjectEditorPanel(context)
         const auto customer = dialog.run();
 
         if (customer.has_value()) {
-            ui_customer.input.set_text(customer->get_id_as_string());
+            ui_customer.input.set_text(customer_to_displayname(*customer));
             std::string payee;
 
             payee += fmt::format("{} {}\n", customer->firstname, customer->lastname);
@@ -87,12 +133,6 @@ InvoiceEditor::InvoiceEditor(AppContext &context) : ObjectEditorPanel(context)
             payee += fmt::format("{}",    customer->country);
 
             ui_payee_field.input.set_text(payee);
-            //ui_firstname.input.set_text( customer->firstname);
-            //ui_lastname.input.set_text( customer->lastname);
-            //ui_zip_code.input.set_text(customer->zip_code);
-            //ui_street.input.set_text(customer->street);
-            //ui_city.input.set_text(customer->city);
-            //ui_country.input.set_text(customer->country);
         }
 
     };

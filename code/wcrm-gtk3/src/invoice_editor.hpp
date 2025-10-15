@@ -6,6 +6,7 @@
 #include <gtkmm/frame.h>
 #include <gtkmm/grid.h>
 #include <gtkmm/image.h>
+#include <gtkmm/notebook.h>
 
 #include "wcrm-lib/objects/invoice.hpp"
 
@@ -14,6 +15,10 @@
 
 class InvoiceEditor : public ObjectEditorPanel<Invoice> {
     private:
+        Gtk::Notebook ui_notebook;
+        Gtk::Box ui_base_info_pane  {Gtk::ORIENTATION_VERTICAL};
+        Gtk::Box ui_payee_text_pane {Gtk::ORIENTATION_VERTICAL};
+
         util_gtk::Placeholder             ui_placeholder;
 
         util_gtk::FrameFormGridRow<1>     ui_frame_system_info{"system_info"};
@@ -24,18 +29,13 @@ class InvoiceEditor : public ObjectEditorPanel<Invoice> {
 
         util_gtk::FrameFormGrid2      ui_frame_base_info{"payee"};
         util_gtk::ObjectChooser       ui_customer{"customer", ""};
-        util_gtk::TextMultilineInput  ui_payee_field{"field", "", };
-        //util_gtk::TextInputReadonly   ui_lastname{"lastname", "", };
-        //util_gtk::TextInputReadonly   ui_gender{"gender", "", }; // TODO: replace quick'n'dirty solution with dropdown
+        util_gtk::TextMultilineInput  ui_payee_field{"receiver", "", };
 
-        //util_gtk::FrameFormGrid2      ui_frame_address{"address"};
-        //util_gtk::TextInputReadonly   ui_street{"street", "", };
-        //util_gtk::TextInputReadonly   ui_zip_code{"zip_code", "", };
-        //util_gtk::TextInputReadonly   ui_city{"city", "", };
-        //util_gtk::TextInputReadonly   ui_country{"country", "", };
+        util_gtk::TextInput           ui_text_subject{"subject", "", };
+        util_gtk::TextMultilineInput  ui_text_opening{"opening_text", "", };
+        util_gtk::TextMultilineInput  ui_text_closing{"closing_text", "", };
 
         util_gtk::FrameFormGrid2      ui_frame_contact{"contact"};
-        util_gtk::TextInput           ui_email{"email", "", };
         util_gtk::TextInput           ui_homepage{"homepage", "", };
         util_gtk::TextInput           ui_phone{"phone", "", };
 
