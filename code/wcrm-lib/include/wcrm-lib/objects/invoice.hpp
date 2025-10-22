@@ -3,16 +3,29 @@
 
 #include "base_object.hpp"
 
-#include "utils/currency.hpp"
-#include "utils/decimal.hpp"
 #include "utils/date.hpp"
+#include "utils/decimal.hpp"
+#include "utils/price.hpp"
+
+#include <vector>
 
 struct Invoice : public BaseObject {
+
+        struct Item {
+                std::string article_id;
+                std::string name;
+                std::string description;
+                size_t      quantity{0};
+                Price       single_price;
+        };
+
         Invoice(uint64_t id) : BaseObject{id} {}
 
         std::string get_id_prefix() const override { return "R-"; }
 
-        uint64_t customer_id;
+        std::string external_invoice_id;
+
+        uint64_t    customer_id;
         std::string payee_field;
         std::string text_subject;
         std::string text_opening;
@@ -21,8 +34,8 @@ struct Invoice : public BaseObject {
         Date invoice_date;
         Date due_date;
         Date paid_date;
+
+        std::vector<Item> items;
 };
-
-
 
 #endif // INVOICE_HPP

@@ -13,9 +13,8 @@
 
 using json = nlohmann::json;
 
-
-template<typename T>
-T get_or_default(json &data, const std::string& name, T default_value)
+template <typename T>
+T get_or_default(json &data, const std::string &name, T default_value)
 {
     if (data.contains(name)) {
         return data[name].get<T>();
@@ -35,14 +34,14 @@ Invoice InvoiceManagerJson::read_json_file(const std::filesystem::path &filepath
 
     invoice.created_at = data["created_at"];
     invoice.modfied_at = data["last_modified_at"];
-    
+
     invoice.payee_field  = data["payee_field"];
     invoice.text_subject = get_or_default<std::string>(data, "text_subject", "");
     invoice.text_opening = get_or_default<std::string>(data, "text_opening", "");
     invoice.text_closing = get_or_default<std::string>(data, "text_closing", "");
-    //invoice.payee_zip_code  = get_or_default<std::string>(data, "payee_zip_code", "");
-    //invoice.payee_city      = get_or_default<std::string>(data, "payee_city", "");
-    //invoice.payee_country   = get_or_default<std::string>(data, "payee_country", "");
+    invoice.customer_id  = data["customer_id"].get<uint64_t>();
+    // invoice.payee_city      = get_or_default<std::string>(data, "payee_city", "");
+    // invoice.payee_country   = get_or_default<std::string>(data, "payee_country", "");
 
     return invoice;
 }
@@ -51,7 +50,7 @@ void InvoiceManagerJson::do_refresh_list()
 {
     SPDLOG_INFO("loading invoices...");
 
-    for(const auto & entry : std::filesystem::directory_iterator(m_invoices_basedir)) {
+    for (const auto &entry : std::filesystem::directory_iterator(m_invoices_basedir)) {
 
         m_elements.emplace_back(read_json_file(entry.path()));
 
@@ -65,7 +64,7 @@ Invoice InvoiceManagerJson::do_save_element(Invoice invoice)
 
     SPDLOG_INFO("saving invoice {}...", invoice.get_id_as_string());
 
-    const std::string filename                   = invoice.get_id_as_string() + ".json";
+    const std::string           filename         = invoice.get_id_as_string() + ".json";
     const std::filesystem::path invoice_filepath = m_invoices_basedir / filename;
 
     invoice.modfied_at = utils::get_current_datetime();
