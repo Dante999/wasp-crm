@@ -12,11 +12,11 @@
 struct Invoice : public BaseObject {
 
         struct Item {
-                std::string article_id;
-                std::string name;
-                std::string description;
-                size_t      quantity{0};
-                Price       single_price;
+            std::string article_id;
+            std::string name;
+            std::string description;
+            float quantity{0};
+            Price       single_price;
         };
 
         Invoice(uint64_t id) : BaseObject{id} {}

@@ -50,6 +50,9 @@ void InvoiceEditor::write_to_gui(const Invoice &invoice)
     value_to_gui(invoice.text_subject, ui_text_subject);
     value_to_gui(invoice.text_opening, ui_text_opening);
     value_to_gui(invoice.text_closing, ui_text_closing);
+
+    ui_article_table.set_items(invoice.items);
+    ui_article_table.refresh();
     // value_to_gui(invoice.payee_firstname                , ui_firstname);
     // value_to_gui(invoice.payee_lastname                 , ui_lastname);
     // value_to_gui(gender_to_string(invoice.payee_gender) , ui_gender);

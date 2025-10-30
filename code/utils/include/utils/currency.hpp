@@ -19,6 +19,14 @@ class Currency {
         Currency() = default;
         Currency(const Currency &other) : m_raw_value{other.m_raw_value} {}
 
+        static Currency create_from_cents(uint64_t cents)
+        {
+            Currency cur;
+            cur.from_cents(cents);
+            return cur;
+        }
+
+
         void from_raw_value(uint64_t raw_value);
         void from_cents(uint64_t cents);
         void from_string(std::string s);

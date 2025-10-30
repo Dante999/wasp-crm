@@ -33,7 +33,7 @@ AlignConsecutiveAssignments: true
 # int         aaaa = 12;
 # float       b = 23;
 # std::string ccc = 23;
-AlignConsecutiveDeclarations: true 
+AlignConsecutiveDeclarations: true
 
 # #define SHORT_NAME       42
 # #define LONGER_NAME      0x007f

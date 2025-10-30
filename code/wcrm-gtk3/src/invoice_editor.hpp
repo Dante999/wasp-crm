@@ -31,15 +31,16 @@ class InvoiceItemTable : public Gtk::ScrolledWindow {
 
                 Gtk::TreeModelColumn<unsigned int>  m_col_id;
                 Gtk::TreeModelColumn<Glib::ustring> m_col_name;
-                Gtk::TreeModelColumn<short>         m_col_quantity;
-                Gtk::TreeModelColumn<short>         m_col_price;
-                Gtk::TreeModelColumn<short>         m_col_total;
+                Gtk::TreeModelColumn<float>         m_col_quantity;
+                Gtk::TreeModelColumn<Glib::ustring> m_col_price;
+                Gtk::TreeModelColumn<Glib::ustring> m_col_total;
         };
 
         ModelColumns                 m_Columns;
         Gtk::ScrolledWindow          m_ScrolledWindow;
         Gtk::TreeView                m_TreeView;
         Glib::RefPtr<Gtk::ListStore> m_refTreeModel;
+        std::vector<Invoice::Item>   m_items{};
 
     public:
         InvoiceItemTable()
@@ -56,14 +57,35 @@ class InvoiceItemTable : public Gtk::ScrolledWindow {
 
             m_TreeView.append_column("ID", m_Columns.m_col_id);
             m_TreeView.append_column("Name", m_Columns.m_col_name);
-            m_TreeView.append_column("Quantity", m_Columns.m_col_quantity);
+            m_TreeView.append_column_numeric("Quantity", m_Columns.m_col_quantity, "%.2f");
             m_TreeView.append_column("Price", m_Columns.m_col_price);
             m_TreeView.append_column("Total", m_Columns.m_col_total);
         }
-#if 0
-    private:
-        std::vector<Invoice::Item> m_items{};
 
+        void set_items(const std::vector<Invoice::Item>& items) { m_items = items; }
+        auto get_items() { return m_items; }
+
+        void refresh()
+        { // clang-format off
+
+            for(size_t i=0; i < m_items.size(); ++i) {
+                auto row = *(m_refTreeModel->append());
+
+                const auto &item = m_items.at(i);
+                spdlog::debug("displaying item[{}]: id={} name={} quantity={} price={}",
+                        i, i+1, item.name, item.quantity, item.single_price.get_value().as_string());
+
+                row[m_Columns.m_col_id] = static_cast<unsigned int>(i+1);
+                row[m_Columns.m_col_name] = item.name;
+                row[m_Columns.m_col_quantity] = item.quantity;
+                row[m_Columns.m_col_price] = item.single_price.get_value().as_string();
+                row[m_Columns.m_col_total] = (item.single_price.get_value()* item.quantity).as_string();
+
+            }
+
+        } // clang-format on
+    private:
+#if 0
         Gtk::Label ui_position_header{util_translate::translate("position")};
         Gtk::Label ui_name{util_translate::translate("name")};
         Gtk::Label ui_quantity{util_translate::translate("quantity")};
@@ -84,8 +106,6 @@ class InvoiceItemTable : public Gtk::ScrolledWindow {
             refresh();
         }
 
-        void set_items(const std::vector<Invoice::Item> items) { m_items = items; }
-        auto get_items() { return m_items; }
 
         void refresh()
         { // clang-format off

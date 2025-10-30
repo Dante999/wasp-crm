@@ -2,6 +2,7 @@
 
 // std
 #include <algorithm>
+#include <cstdlib>
 #include <fstream>
 
 // thirdparty
@@ -42,6 +43,18 @@ Invoice InvoiceManagerJson::read_json_file(const std::filesystem::path &filepath
     invoice.customer_id  = data["customer_id"].get<uint64_t>();
     // invoice.payee_city      = get_or_default<std::string>(data, "payee_city", "");
     // invoice.payee_country   = get_or_default<std::string>(data, "payee_country", "");
+
+    // TODO: remove me and load from file, this is just for demo!
+    for (size_t i = 0; i < 10; ++i) {
+        Currency c;
+        c.from_cents(static_cast<uint64_t>(rand() % 1000));
+        invoice.items.emplace_back(Invoice::Item{.article_id   = "A-000001",
+                                                 .name         = "Item " + std::to_string(i),
+                                                 .description  = "my description",
+                                                 .quantity     = static_cast<size_t>(rand() % 100),
+                                                 .single_price =
+                                                 Price::create_from_price_with_vat(Currency::create_from_cents(120), 19)});
+    }
 
     return invoice;
 }
