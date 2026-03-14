@@ -1,3 +1,7 @@
+# MOVED TO CODEBERG.ORG
+
+see https://codeberg.org/dante999/wasp-crm
+
 # WaspCRM
 
 this very simple CRM targets people who want to have their data kept local and
